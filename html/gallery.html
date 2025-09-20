@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Showcase - Andy Bernardo | Random Images Gallery</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Gallery-specific styles */
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 20px;
+        }
+        
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="90" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .title-section {
+            margin-bottom: 30px;
+        }
+
+        .gallery-header h1 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 42px;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
+        }
+
+        .gallery-header p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            font-size: 18px;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            align-items: start;
+        }
+
+        body {
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            /* Disable text selection globally */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .post {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            break-inside: avoid;
+            position: relative;
+        }
+        
+        .post::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+        }
+        
+        .post:hover::before {
+            opacity: 1;
+        }
+        
+        .post:hover {   
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(102, 126, 234, 0.25);
+        }
+        
+        .post-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .post:hover .post-header {
+            opacity: 1;
+        }
+        
+        .post-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4169E1;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .post-info h3 {
+            margin: 0;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .post-info span {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 11px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .post-image {
+            width: 100%;
+            height: auto;
+            min-height: 300px;
+            max-height: 600px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Disable image interactions */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            pointer-events: none;
+            /* Disable drag and drop */
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            /* Disable right-click context menu */
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .post-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .post:hover .post-actions {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            color: #333;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn:hover {
+            background: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .action-btn.liked {
+            background: #e74c3c;
+            color: white;
+            animation: likeAnimation 0.6s ease;
+        }
+        
+        .action-btn.bookmarked {
+            background: #f39c12;
+            color: white;
+        }
+        
+        @keyframes likeAnimation {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        
+        .post-stats {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .post:hover .post-stats {
+            opacity: 1;
+        }
+        
+        .post-caption {
+            padding: 25px;
+            background: white;
+        }
+        
+        .post-caption h4 {
+            margin: 0 0 12px 0;
+            color: #1f1f25;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        .post-caption p {
+            margin: 0 0 15px 0;
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        .post-tags {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: #f0f2f5;
+            color: #4169E1;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .comments-section {
+            padding: 20px 25px;
+            background: #f8f9fa;
+            border-top: 1px solid #f0f2f5;
+            display: none;
+        }
+        
+        .post:hover .comments-section {
+            display: block;
+        }
+        
+        .comment {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: #1f1f25;
+            font-size: 14px;
+        }
+        
+        .comment-text {
+            color: #666;
+            font-size: 14px;
+            margin: 2px 0;
+        }
+        
+        .comment-time {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .add-comment {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .add-comment input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .add-comment button {
+            background: #4169E1;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .stats-count {
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Different image heights for variety */
+        .post-image.tall {
+            min-height: 450px;
+            max-height: 700px;
+        }
+        
+        .post-image.medium {
+            min-height: 350px;
+            max-height: 500px;
+        }
+        
+        .post-image.short {
+            min-height: 280px;
+            max-height: 380px;
+        }
+        
+        @media (max-width: 1200px) {
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            
+            .gallery-header h1 {
+                font-size: 32px;
+            }
+            
+            .gallery-header p {
+                font-size: 16px;
+            }
+            
+            .header-stats {
+                gap: 25px;
+            }
+            
+            .stat-number {
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-container {
+                padding: 15px;
+                padding-top: 15px;
+            }
+            
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 15px;
+            }
+            
+            .post-image {
+                min-height: 250px;
+                max-height: 400px;
+            }
+            
+            .gallery-header {
+                padding: 30px 20px;
+                margin-bottom: 30px;
+                border-radius: 20px;
+            }
+            
+            .gallery-header h1 {
+                font-size: 28px;
+            }
+            
+            .gallery-header p {
+                font-size: 16px;
+            }
+            
+            .header-stats {
+                gap: 20px;
+                margin-top: 25px;
+            }
+            
+            .stat-number {
+                font-size: 20px;
+            }
+            
+            .stat-label {
+                font-size: 12px;
+            }
+            
+            .post-caption {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-container {
+                padding: 10px;
+            }
+            
+            .gallery-header {
+                padding: 25px 15px;
+                margin-bottom: 25px;
+            }
+            
+            .gallery-header h1 {
+                font-size: 24px;
+            }
+            
+            .gallery-header p {
+                font-size: 14px;
+            }
+            
+            .header-stats {
+                flex-direction: row;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .stat-number {
+                font-size: 18px;
+            }
+            
+            .stat-label {
+                font-size: 11px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ccc;
+        }
+
+        .modal-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            height: 80%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .modal-image-container i {
+            font-size: 120px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        /* Protection for modal images */
+        .modal-image-container img {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 20px;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-action-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .modal-action-btn.liked {
+            color: #ff3040;
+        }
+
+        .modal-action-btn.bookmarked {
+            color: #ffd700;
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+        }
+
+        .modal-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn {
+            left: 30px;
+        }
+
+        .next-btn {
+            right: 30px;
+        }
+
+        .modal-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .modal-nav:disabled:hover {
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .modal-image-container {
+                width: 95%;
+                height: 70%;
+            }
+            
+            .modal-image-container i {
+                font-size: 80px;
+            }
+            
+            .close {
+                font-size: 30px;
+                top: 15px;
+                right: 20px;
+            }
+            
+            .modal-actions {
+                gap: 15px;
+                padding: 12px 20px;
+            }
+            
+            .modal-action-btn {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
+            
+            .modal-nav {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .prev-btn {
+                left: 15px;
+            }
+            
+            .next-btn {
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <div class="header-content">
+                <div class="title-section">
+                    <h1>📸 Gallery</h1>
+                    <p>My personal collection of memorable moments and special memories</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">2</span>
+                        <span class="stat-label">Images</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">0</span>
+                        <span class="stat-label">Likes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">0</span>
+                        <span class="stat-label">Saved</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="posts-grid">
+            <!-- Post 1 - Logo -->
+            <article class="post medium" data-post-id="1">
+            <div class="post-image">
+                <img src="../images/logo.png" alt="Logo">
+                <div class="post-overlay">
+                    <div class="post-stats">
+                        <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
+                        <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-btn like-btn" data-action="like">
+                            <i class="far fa-heart"></i>
+                        </button>
+                       
+                        <button class="action-btn share-btn" data-action="share">
+                            <i class="far fa-paper-plane"></i>
+                        </button>
+                        <button class="action-btn bookmark-btn" data-action="bookmark">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Post 2 - Graduation Photo -->
+        <article class="post tall" data-post-id="2">
+            <div class="post-image">
+                <img src="../images/grad.JPEG" alt="Graduation Photo">
+                <div class="post-overlay">
+                    <div class="post-stats">
+                        <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
+                        <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+                    </div>
+                    <div class="post-actions">
+                        <button class="action-btn like-btn" data-action="like">
+                            <i class="far fa-heart"></i>
+                        </button>
+                       
+                        <button class="action-btn share-btn" data-action="share">
+                            <i class="far fa-paper-plane"></i>
+                        </button>
+                        <button class="action-btn bookmark-btn" data-action="bookmark">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </article>
+        </div> <!-- posts-grid -->
+    </div> <!-- gallery-container -->
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            
+            <!-- Navigation arrows -->
+            <button class="modal-nav prev-btn" id="prevBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="modal-nav next-btn" id="nextBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="modal-image-container">
+                <i id="modalIcon" class="fas fa-code"></i>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-action-btn like-btn" data-action="like">
+                    <i class="far fa-heart"></i>
+                    <span class="like-count">0</span>
+                </button>
+                <button class="modal-action-btn bookmark-btn" data-action="bookmark">
+                    <i class="far fa-bookmark"></i>
+                </button>
+                <button class="modal-action-btn share-btn" data-action="share">
+                    <i class="far fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize like counts from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLikesFromStorage();
+            loadBookmarksFromStorage();
+            loadCommentsFromStorage();
+            initializeModalFunctionality();
+            initializeImageProtection();
+        });
+
+        // Image protection functionality
+        function initializeImageProtection() {
+            // Disable right-click context menu on images
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Disable common keyboard shortcuts for saving/copying
+            document.addEventListener('keydown', function(e) {
+                // Disable Ctrl+S (Save), Ctrl+A (Select All), Ctrl+C (Copy), Ctrl+P (Print)
+                if (e.ctrlKey && (e.key === 's' || e.key === 'a' || e.key === 'c' || e.key === 'p')) {
+                    e.preventDefault();
+                    return false;
+                }
+                // Disable F12 (Developer Tools)
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    return false;
+                }
+                // Disable Ctrl+Shift+I (Developer Tools)
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    return false;
+                }
+                // Disable Ctrl+U (View Source)
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Disable drag and drop on images
+            document.addEventListener('dragstart', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Add watermark overlay (optional)
+            addWatermarkProtection();
+        }
+
+        // Add subtle watermark protection
+        function addWatermarkProtection() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .post-image::after,
+                .modal-image-container::after {
+                    content: '© Andy Bernardo';
+                    position: absolute;
+                    bottom: 10px;
+                    right: 10px;
+                    color: rgba(255, 255, 255, 0.3);
+                    font-size: 12px;
+                    font-weight: 600;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+                    pointer-events: none;
+                    z-index: 10;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Modal functionality
+        function initializeModalFunctionality() {
+            const modal = document.getElementById('imageModal');
+            const modalIcon = document.getElementById('modalIcon');
+            const closeBtn = document.querySelector('.close');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentPostId = null;
+            let allPosts = [];
+
+            console.log('Initializing modal functionality');
+            console.log('Modal element:', modal);
+            console.log('Modal icon:', modalIcon);
+            console.log('Close button:', closeBtn);
+
+            if (!modal || !modalIcon || !closeBtn) {
+                console.error('Modal elements not found!');
+                return;
+            }
+
+            // Get all posts for navigation
+            allPosts = Array.from(document.querySelectorAll('.post')).map(post => post.dataset.postId);
+
+            // Navigation functions
+            function getCurrentPostIndex() {
+                return allPosts.indexOf(currentPostId);
+            }
+
+            function showPost(postId) {
+                const post = document.querySelector(`[data-post-id="${postId}"]`);
+                if (!post) return;
+
+                currentPostId = postId;
+                const postImage = post.querySelector('.post-image');
+                const img = postImage.querySelector('img');
+                const icon = postImage.querySelector('i');
+                
+                // Clear modal content first
+                const modalContainer = document.querySelector('.modal-image-container');
+                modalContainer.innerHTML = '';
+                
+                if (img) {
+                    // Copy image to modal
+                    const modalImg = document.createElement('img');
+                    modalImg.src = img.src;
+                    modalImg.alt = img.alt;
+                    modalImg.style.width = '100%';
+                    modalImg.style.height = '100%';
+                    modalImg.style.objectFit = 'contain';
+                    modalImg.style.borderRadius = '15px';
+                    modalContainer.appendChild(modalImg);
+                } else if (icon) {
+                    // Copy icon to modal
+                    const modalIcon = document.createElement('i');
+                    modalIcon.className = icon.className;
+                    modalIcon.style.fontSize = '120px';
+                    modalIcon.style.color = 'white';
+                    modalIcon.style.opacity = '0.8';
+                    modalContainer.appendChild(modalIcon);
+                }
+                
+                // Update modal action buttons with current post state
+                updateModalActions(post);
+                
+                // Update navigation buttons
+                updateNavigationButtons();
+            }
+
+            function updateNavigationButtons() {
+                const currentIndex = getCurrentPostIndex();
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === allPosts.length - 1;
+            }
+
+            function showPreviousPost() {
+                const currentIndex = getCurrentPostIndex();
+                if (currentIndex > 0) {
+                    showPost(allPosts[currentIndex - 1]);
+                }
+            }
+
+            function showNextPost() {
+                const currentIndex = getCurrentPostIndex();
+                if (currentIndex < allPosts.length - 1) {
+                    showPost(allPosts[currentIndex + 1]);
+                }
+            }
+
+            // Test button functionality
+            const testBtn = document.getElementById('testModalBtn');
+            if (testBtn) {
+                testBtn.addEventListener('click', function() {
+                    console.log('Test button clicked - opening modal');
+                    modalIcon.className = 'fas fa-camera';
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            // Add click event to all post images
+            document.querySelectorAll('.post-image').forEach(postImage => {
+                postImage.addEventListener('click', function(e) {
+                    console.log('Image clicked!', e.target);
+                    
+                    // Don't open modal if clicking on action buttons
+                    if (e.target.closest('.post-actions')) {
+                        console.log('Clicked on action button, not opening modal');
+                        return;
+                    }
+                    
+                    const post = this.closest('.post');
+                    const postId = post.dataset.postId;
+                    
+                    console.log('Opening modal for post:', postId);
+                    
+                    // Show the post in modal
+                    showPost(postId);
+                    
+                    // Show modal
+                    modal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                    
+                    console.log('Modal should be visible now');
+                });
+            });
+
+            // Navigation button events
+            prevBtn.addEventListener('click', showPreviousPost);
+            nextBtn.addEventListener('click', showNextPost);
+
+            // Close modal when clicking X
+            closeBtn.addEventListener('click', closeModal);
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Close modal with Escape key and add arrow key navigation
+            document.addEventListener('keydown', function(e) {
+                if (modal.style.display === 'block') {
+                    if (e.key === 'Escape') {
+                        closeModal();
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        showPreviousPost();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        showNextPost();
+                    }
+                }
+            });
+
+            // Modal action buttons
+            modal.querySelectorAll('.modal-action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    const post = document.querySelector(`[data-post-id="${currentPostId}"]`);
+                    
+                    if (action === 'like') {
+                        handleModalLike(this, post);
+                    } else if (action === 'bookmark') {
+                        handleModalBookmark(this, post);
+                    } else if (action === 'share') {
+                        handleModalShare(post);
+                    }
+                });
+            });
+
+            function closeModal() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                currentPostId = null;
+            }
+
+            function updateModalActions(post) {
+                const modalLikeBtn = modal.querySelector('.like-btn');
+                const modalBookmarkBtn = modal.querySelector('.bookmark-btn');
+                const modalLikeCount = modal.querySelector('.like-count');
+                
+                // Update like button state
+                const postLikeBtn = post.querySelector('.like-btn');
+                const postLikeCount = post.querySelector('.like-count');
+                
+                if (postLikeBtn.classList.contains('liked')) {
+                    modalLikeBtn.classList.add('liked');
+                    modalLikeBtn.querySelector('i').className = 'fas fa-heart';
+                } else {
+                    modalLikeBtn.classList.remove('liked');
+                    modalLikeBtn.querySelector('i').className = 'far fa-heart';
+                }
+                modalLikeCount.textContent = postLikeCount.textContent;
+                
+                // Update bookmark button state
+                const postBookmarkBtn = post.querySelector('.bookmark-btn');
+                if (postBookmarkBtn.classList.contains('bookmarked')) {
+                    modalBookmarkBtn.classList.add('bookmarked');
+                    modalBookmarkBtn.querySelector('i').className = 'fas fa-bookmark';
+                } else {
+                    modalBookmarkBtn.classList.remove('bookmarked');
+                    modalBookmarkBtn.querySelector('i').className = 'far fa-bookmark';
+                }
+            }
+
+            function handleModalLike(modalBtn, post) {
+                const postLikeBtn = post.querySelector('.like-btn');
+                const postLikeCount = post.querySelector('.like-count');
+                const modalLikeCount = modal.querySelector('.like-count');
+                const modalHeartIcon = modalBtn.querySelector('i');
+                const postHeartIcon = postLikeBtn.querySelector('i');
+                
+                let likesCount = parseInt(postLikeCount.textContent);
+                
+                if (modalBtn.classList.contains('liked')) {
+                    // Unlike
+                    modalBtn.classList.remove('liked');
+                    postLikeBtn.classList.remove('liked');
+                    modalHeartIcon.className = 'far fa-heart';
+                    postHeartIcon.className = 'far fa-heart';
+                    likesCount--;
+                    removeLikeFromStorage(currentPostId);
+                } else {
+                    // Like
+                    modalBtn.classList.add('liked');
+                    postLikeBtn.classList.add('liked');
+                    modalHeartIcon.className = 'fas fa-heart';
+                    postHeartIcon.className = 'fas fa-heart';
+                    likesCount++;
+                    saveLikeToStorage(currentPostId);
+                }
+                
+                postLikeCount.textContent = likesCount;
+                modalLikeCount.textContent = likesCount;
+                saveLikesCount(currentPostId, likesCount);
+            }
+
+            function handleModalBookmark(modalBtn, post) {
+                const postBookmarkBtn = post.querySelector('.bookmark-btn');
+                const modalBookmarkIcon = modalBtn.querySelector('i');
+                const postBookmarkIcon = postBookmarkBtn.querySelector('i');
+                
+                if (modalBtn.classList.contains('bookmarked')) {
+                    // Remove bookmark
+                    modalBtn.classList.remove('bookmarked');
+                    postBookmarkBtn.classList.remove('bookmarked');
+                    modalBookmarkIcon.className = 'far fa-bookmark';
+                    postBookmarkIcon.className = 'far fa-bookmark';
+                    removeBookmarkFromStorage(currentPostId);
+                } else {
+                    // Add bookmark
+                    modalBtn.classList.add('bookmarked');
+                    postBookmarkBtn.classList.add('bookmarked');
+                    modalBookmarkIcon.className = 'fas fa-bookmark';
+                    postBookmarkIcon.className = 'fas fa-bookmark';
+                    saveBookmarkToStorage(currentPostId);
+                }
+            }
+
+            function handleModalShare(post) {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Check out this project',
+                        text: 'Amazing work by Andy Bernardo',
+                        url: window.location.href
+                    });
+                } else {
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        alert('Link copied to clipboard!');
+                    });
+                }
+            }
+        }
+
+        // Like functionality
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const post = this.closest('.post');
+                const postId = post.dataset.postId;
+                const heartIcon = this.querySelector('i');
+                const likesCountElement = post.querySelector('.like-count');
+                
+                let likesCount = parseInt(likesCountElement.textContent);
+                
+                if (this.classList.contains('liked')) {
+                    // Unlike
+                    this.classList.remove('liked');
+                    heartIcon.className = 'far fa-heart';
+                    likesCount--;
+                    removeLikeFromStorage(postId);
+                } else {
+                    // Like
+                    this.classList.add('liked');
+                    heartIcon.className = 'fas fa-heart';
+                    likesCount++;
+                    saveLikeToStorage(postId);
+                }
+                
+                likesCountElement.textContent = likesCount;
+                saveLikesCount(postId, likesCount);
+            });
+        });
+
+        // Bookmark functionality
+        document.querySelectorAll('.bookmark-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const post = this.closest('.post');
+                const postId = post.dataset.postId;
+                const bookmarkIcon = this.querySelector('i');
+                
+                if (this.classList.contains('bookmarked')) {
+                    // Remove bookmark
+                    this.classList.remove('bookmarked');
+                    bookmarkIcon.className = 'far fa-bookmark';
+                    removeBookmarkFromStorage(postId);
+                } else {
+                    // Add bookmark
+                    this.classList.add('bookmarked');
+                    bookmarkIcon.className = 'fas fa-bookmark';
+                    saveBookmarkToStorage(postId);
+                }
+            });
+        });
+
+        // Share functionality
+        document.querySelectorAll('.share-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const post = this.closest('.post');
+                const caption = post.querySelector('.post-caption h4').textContent;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: caption,
+                        text: 'Check out this project by Andy Bernardo',
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback - copy to clipboard
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        alert('Link copied to clipboard!');
+                    });
+                }
+            });
+        });
+
+        // Add comment functionality
+        function addComment(button) {
+            const input = button.previousElementSibling;
+            const commentText = input.value.trim();
+            
+            if (commentText === '') return;
+            
+            const post = button.closest('.post');
+            const postId = post.dataset.postId;
+            const commentsSection = button.closest('.comments-section');
+            const addCommentDiv = button.closest('.add-comment');
+            
+            // Create comment data
+            const commentData = {
+                id: Date.now(), // Unique ID based on timestamp
+                author: 'Me',
+                text: commentText,
+                time: 'Just now',
+                avatar: 'ME'
+            };
+            
+            // Save comment to localStorage
+            saveCommentToStorage(postId, commentData);
+            
+            // Create new comment element
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            newComment.innerHTML = `
+                <div class="comment-avatar">${commentData.avatar}</div>
+                <div class="comment-content">
+                    <div class="comment-author">${commentData.author}</div>
+                    <div class="comment-text">${commentData.text}</div>
+                    <div class="comment-time">${commentData.time}</div>
+                </div>
+            `;
+            
+            // Insert before the add comment section
+            commentsSection.insertBefore(newComment, addCommentDiv);
+            
+            // Clear input
+            input.value = '';
+            
+            // Add animation
+            newComment.style.opacity = '0';
+            newComment.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                newComment.style.transition = 'all 0.3s ease';
+                newComment.style.opacity = '1';
+                newComment.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        // Enter key for comments
+        document.querySelectorAll('.comment-input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const button = this.nextElementSibling;
+                    addComment(button);
+                }
+            });
+        });
+
+        // Local storage functions
+        function saveLikeToStorage(postId) {
+            let likes = JSON.parse(localStorage.getItem('gallery_likes') || '[]');
+            if (!likes.includes(postId)) {
+                likes.push(postId);
+                localStorage.setItem('gallery_likes', JSON.stringify(likes));
+            }
+        }
+
+        function removeLikeFromStorage(postId) {
+            let likes = JSON.parse(localStorage.getItem('gallery_likes') || '[]');
+            likes = likes.filter(id => id !== postId);
+            localStorage.setItem('gallery_likes', JSON.stringify(likes));
+        }
+
+        function saveLikesCount(postId, count) {
+            let counts = JSON.parse(localStorage.getItem('gallery_likes_count') || '{}');
+            counts[postId] = count;
+            localStorage.setItem('gallery_likes_count', JSON.stringify(counts));
+        }
+
+        function loadLikesFromStorage() {
+            const likes = JSON.parse(localStorage.getItem('gallery_likes') || '[]');
+            const counts = JSON.parse(localStorage.getItem('gallery_likes_count') || '{}');
+            
+            likes.forEach(postId => {
+                const post = document.querySelector(`[data-post-id="${postId}"]`);
+                if (post) {
+                    const likeBtn = post.querySelector('.like-btn');
+                    const heartIcon = likeBtn.querySelector('i');
+                    likeBtn.classList.add('liked');
+                    heartIcon.className = 'fas fa-heart';
+                }
+            });
+            
+            Object.keys(counts).forEach(postId => {
+                const post = document.querySelector(`[data-post-id="${postId}"]`);
+                if (post) {
+                    const likesCountElement = post.querySelector('.like-count');
+                    if (likesCountElement) {
+                        likesCountElement.textContent = counts[postId];
+                    }
+                }
+            });
+        }
+
+        function saveBookmarkToStorage(postId) {
+            let bookmarks = JSON.parse(localStorage.getItem('gallery_bookmarks') || '[]');
+            if (!bookmarks.includes(postId)) {
+                bookmarks.push(postId);
+                localStorage.setItem('gallery_bookmarks', JSON.stringify(bookmarks));
+            }
+        }
+
+        function removeBookmarkFromStorage(postId) {
+            let bookmarks = JSON.parse(localStorage.getItem('gallery_bookmarks') || '[]');
+            bookmarks = bookmarks.filter(id => id !== postId);
+            localStorage.setItem('gallery_bookmarks', JSON.stringify(bookmarks));
+        }
+
+        function loadBookmarksFromStorage() {
+            const bookmarks = JSON.parse(localStorage.getItem('gallery_bookmarks') || '[]');
+            
+            bookmarks.forEach(postId => {
+                const post = document.querySelector(`[data-post-id="${postId}"]`);
+                if (post) {
+                    const bookmarkBtn = post.querySelector('.bookmark-btn');
+                    const bookmarkIcon = bookmarkBtn.querySelector('i');
+                    bookmarkBtn.classList.add('bookmarked');
+                    bookmarkIcon.className = 'fas fa-bookmark';
+                }
+            });
+        }
+
+        // Comment storage functions
+        function saveCommentToStorage(postId, commentData) {
+            let comments = JSON.parse(localStorage.getItem('gallery_comments') || '{}');
+            if (!comments[postId]) {
+                comments[postId] = [];
+            }
+            comments[postId].push(commentData);
+            localStorage.setItem('gallery_comments', JSON.stringify(comments));
+        }
+
+        function loadCommentsFromStorage() {
+            const comments = JSON.parse(localStorage.getItem('gallery_comments') || '{}');
+            
+            Object.keys(comments).forEach(postId => {
+                const post = document.querySelector(`[data-post-id="${postId}"]`);
+                if (post) {
+                    const commentsSection = post.querySelector('.comments-section');
+                    if (commentsSection) {
+                        const addCommentDiv = commentsSection.querySelector('.add-comment');
+                        
+                        comments[postId].forEach(commentData => {
+                            const commentElement = document.createElement('div');
+                            commentElement.className = 'comment';
+                            commentElement.innerHTML = `
+                                <div class="comment-avatar">${commentData.avatar}</div>
+                                <div class="comment-content">
+                                    <div class="comment-author">${commentData.author}</div>
+                                    <div class="comment-text">${commentData.text}</div>
+                                    <div class="comment-time">${commentData.time}</div>
+                                </div>
+                            `;
+                            if (addCommentDiv) {
+                                commentsSection.insertBefore(commentElement, addCommentDiv);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

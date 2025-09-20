@@ -1,37 +1,487 @@
 <!DOCTYPE html>
-<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Personal Portfolio Website</title>
-    
-    <!----CSS link----->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Andy Bernardo - Freelance Web Developer | Portfolio</title>
+    <meta name="description" content="Experienced full-stack web developer specializing in React, Node.js, and modern web technologies. Available for freelance projects worldwide." />
     <link rel="stylesheet" href="../css/styles.css" />
-
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   </head>
   <body>
     <div class="hero">
       <nav>
         <img src="../images/logo.png" class="logo" />
         <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Service</a></li>
-          <li><a href="#">Portfolio</a></li>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="#about" class="nav-link active">About</a></li>
+          <li><a href="#services" class="nav-link">Services</a></li>
+          <li><a href="#skills" class="nav-link">Skills</a></li>
+          <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
         <a target="_blank" href="../files/resume.pdf" class="btn">Resume</a>
       </nav>
-
-      <div class="content">
-        <span class="title">Freelance Web Developer</span>
-        <h1>Hello, I’m <span>Andy</span></h1>
-        <p>
-     I have a half-decade of experience as a full-stack web developer, working for both startups and well-established businesses.
-        </p>
-        <a target="_blank" href="https://www.linkedin.com/in/landleybernardo" class="btn">About Me</a>
-      </div>
     </div>
+    <!-- About Section -->
+    <section class="about-section" id="about">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">Get to know me</span>
+          <h2>About <span>Andy</span></h2>
+        </div>
+        <div class="about-content">
+          <div class="about-text">
+            <p>
+              I'm a passionate full-stack web developer with over 5 years of experience creating digital solutions that make a difference. My journey in web development started with a curiosity about how websites work, and it has evolved into a career dedicated to building exceptional user experiences.
+            </p>
+            <p>
+              I specialize in modern web technologies including React, Node.js, and cloud platforms. Whether you're a startup looking to establish your digital presence or an established business seeking to modernize your web applications, I bring the expertise and dedication needed to turn your vision into reality.
+            </p>
+            <!-- <div class="about-stats">
+              <div class="stat">
+                <h3>50+</h3>
+                <p>Projects Completed</p>
+              </div>
+              <div class="stat">
+                <h3>5+</h3>
+                <p>Years Experience</p>
+              </div>
+              <div class="stat">
+                <h3>100%</h3>
+                <p>Client Satisfaction</p>
+              </div>
+            </div> -->
+          </div>
+          <div class="about-image">
+            <div class="image-placeholder">
+              <i class="fas fa-user"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Services Section -->
+    <section class="services-section" id="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">What I do</span>
+          <h2>My <span>Services</span></h2>
+        </div>
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fab fa-laravel"></i>
+            </div>
+            <h3>Laravel Development</h3>
+            <p>Building robust web applications with Laravel framework, including custom solutions, APIs, and enterprise-level systems.</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-database"></i>
+            </div>
+            <h3>Full-Stack PHP Development</h3>
+            <p>Creating complete web solutions using PHP, MySQL, and modern frameworks like Zend and Laminas for scalable applications.</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>Responsive Web Design</h3>
+            <p>Developing mobile-first websites with Livewire, Vue.js, Tailwind CSS, and Bootstrap for optimal user experience.</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Cloud Deployment & DevOps</h3>
+            <p>Deploying and managing applications on Digital Ocean using Laravel Forge for automated deployment and server management.</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <h3>Startup Solutions</h3>
+            <p>Specialized in developing MVPs and scalable solutions for startups, having completed the Dado Banatao Startup Incubator Program.</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3>Technical Consulting</h3>
+            <p>Providing expert advice on web architecture, technology stack selection, and project planning with Masters-level expertise.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Skills Section -->
+    <section class="skills-section" id="skills">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">My expertise</span>
+          <h2>Technical <span>Skills</span></h2>
+        </div>
+        <div class="skills-content">
+          <div class="skills-category">
+            <h3>Frontend Technologies</h3>
+            <div class="skills-list">
+              <span class="skill-tag">HTML</span>
+              <span class="skill-tag">CSS</span>
+              <span class="skill-tag">JavaScript</span>
+              <span class="skill-tag">Livewire</span>
+              <span class="skill-tag">React</span>
+              <span class="skill-tag">Vue.js</span>
+              <span class="skill-tag">Tailwind</span>
+              <span class="skill-tag">Bootstrap</span>
+            </div>
+          </div>
+          <div class="skills-category">
+            <h3>Backend Technologies</h3>
+            <div class="skills-list">
+              <span class="skill-tag">PHP</span>
+              <span class="skill-tag">Laravel</span>
+              <span class="skill-tag">Zend Framework</span>
+              <span class="skill-tag">Laminas</span>
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">Java</span>
+              <span class="skill-tag">MySQL</span>
+              <span class="skill-tag">Redis</span>
+            </div>
+          </div>
+          <div class="skills-category">
+            <h3>Cloud & DevOps</h3>
+            <div class="skills-list">
+              <span class="skill-tag">Digital Ocean</span>
+              <span class="skill-tag">Laravel Forge</span>
+              <span class="skill-tag">Git</span>
+              <span class="skill-tag">Linux</span>
+              <span class="skill-tag">Server Management</span>
+              <span class="skill-tag">CI/CD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Portfolio Section -->
+    <section class="portfolio-section" id="portfolio">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">My work</span>
+          <h2>Recent <span>Projects</span></h2>
+        </div>
+        <div class="portfolio-grid">
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <div class="image-placeholder">
+                <i class="fas fa-building"></i>
+              </div>
+            </div>
+            <div class="portfolio-content">
+              <h3><a href="https://propsuite.net">Property Management System</a></h3>
+              <p>A full-stack property management system built with Laravel and Tailwind, full suite digital solution for developed communities.</p>
+              <div class="portfolio-tags">
+                <span>Laravel</span>
+                <span>Tailwind</span>
+                <span>MySQL</span>
+                <span>Bootstrap</span>
+                <span>Livewire</span>
+                <span>Alpine.js</span>
+              </div>
+
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <div class="image-placeholder">
+                <i class="fas fa-users"></i>
+              </div>
+            </div>
+            <div class="portfolio-content">
+              <h3><a href="https://homefie.com.ph">Platform for home owners, builders, and designers</a></h3>
+              <p>A collaborative platform connecting homeowners with builders and designers, featuring project management tools, design galleries, and communication systems.</p>
+              <div class="portfolio-tags">
+                <span>Laravel</span>
+                <span>Tailwind</span>
+                <span>MySQL</span>
+                <span>Bootstrap</span>
+                <span>Livewire</span>
+              </div>
+  
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <div class="image-placeholder">
+                <i class="fas fa-camera"></i>
+              </div>
+            </div>
+            <div class="portfolio-content">
+              <h3><a href="/html/gallery.html">Image Gallery</a></h3>
+              <p>Responsive landing page for a photography portfolio with smooth animations and modern design.</p>
+              <div class="portfolio-tags">
+                <span>HTML5</span>
+                <span>CSS3</span>
+                <span>JavaScript</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials" style="display: none;">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">What clients say</span>
+          <h2>Client <span>Testimonials</span></h2>
+        </div>
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <p>"Andy delivered an exceptional website that exceeded our expectations. His attention to detail and technical expertise made the entire process smooth and professional."</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="author-info">
+                <h4>Sarah Johnson</h4>
+                <span>CEO, TechStart Inc.</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <p>"Working with Andy was a pleasure. He understood our requirements perfectly and delivered a robust e-commerce platform that boosted our online sales significantly."</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="author-info">
+                <h4>Michael Chen</h4>
+                <span>Founder, ShopEasy</span>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <p>"Andy's expertise in modern web technologies helped us modernize our legacy system. The new application is faster, more secure, and user-friendly."</p>
+            </div>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="author-info">
+                <h4>Emma Rodriguez</h4>
+                <span>CTO, DataFlow Solutions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-subtitle">Let's work together</span>
+          <h2>Contact <span>Me</span></h2>
+        </div>
+        
+        <div class="contact-container">
+          <!-- Contact Information -->
+          <div class="contact-info">
+            <h3>Get in Touch</h3>
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <div>
+                <h4>Email</h4>
+                <a href="mailto:bernardolandley@outlook.com">bernardolandley@outlook.com</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-phone"></i>
+              <div>
+                <h4>Mobile</h4>
+                <a href="tel:+639752826318">+63 975 282 6318</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <h4>Location</h4>
+                <p>Available Worldwide</p>
+              </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="social-links">
+              <h4>Follow Me</h4>
+              <div class="social-icons">
+                <a href="https://www.linkedin.com/in/landleybernardo/" target="_blank" class="social-icon">
+                  <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com/carrotisorange/" target="_blank" class="social-icon">
+                  <i class="fab fa-github"></i>
+                </a>
+                <span class="social-icon disabled">
+                  <i class="fab fa-twitter"></i>
+                </span>
+                <span class="social-icon disabled">
+                  <i class="fab fa-instagram"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="contact-form-container">
+            <h3>Send Me a Message</h3>
+            <form class="contact-form" action="https://formspree.io/f/xjkenakd" method="POST">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+              </div>
+              <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="_subject" required>
+              </div>
+              <div class="form-group">
+                <label for="budget">Project Budget</label>
+                <select id="budget" name="budget">
+                  <option value="">Select your budget range</option>
+                  <option value="under-5k">Under $5,000</option>
+                  <option value="5k-10k">$5,000 - $10,000</option>
+                  <option value="10k-25k">$10,000 - $25,000</option>
+                  <option value="25k-plus">$25,000+</option>
+                  <option value="discuss">Let's discuss</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="timeline">Project Timeline</label>
+                <select id="timeline" name="timeline">
+                  <option value="">When do you need this completed?</option>
+                  <option value="asap">ASAP</option>
+                  <option value="1-month">Within 1 month</option>
+                  <option value="2-3-months">2-3 months</option>
+                  <option value="flexible">I'm flexible</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="message">Project Details</label>
+                <textarea id="message" name="message" rows="6" placeholder="Tell me about your project, goals, and any specific requirements..." required></textarea>
+              </div>
+              <!-- Honeypot field to prevent spam -->
+              <input type="text" name="_gotcha" style="display:none" />
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i>
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Smooth scrolling for navigation links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href').substring(1);
+          const targetSection = document.getElementById(targetId);
+          
+          if (targetSection) {
+            targetSection.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      // Navigation highlighting on scroll
+      window.addEventListener('scroll', function() {
+        const nav = document.querySelector('nav');
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        // Add/remove scrolled class for nav styling
+        if (window.pageYOffset > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+        
+        let current = '';
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          
+          if (window.pageYOffset >= sectionTop - 250) {
+            current = section.getAttribute('id');
+          }
+        });
+        
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + current) {
+            link.classList.add('active');
+          }
+        });
+      });
+
+      // Form submission handling
+      document.querySelector('.contact-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const form = this;
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.innerHTML;
+        
+        // Show loading state
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        submitButton.disabled = true;
+        
+        // Submit to Formspree
+        fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        }).then(response => {
+          if (response.ok) {
+            // Success
+            alert('Thank you for your message! I\'ll get back to you within 24 hours.');
+            form.reset();
+          } else {
+            // Error
+            response.json().then(data => {
+              if (Object.hasOwnProperty.call(data, 'errors')) {
+                alert('Oops! There was a problem: ' + data.errors.map(error => error.message).join(', '));
+              } else {
+                alert('Oops! There was a problem submitting your form. Please try again or email me directly.');
+              }
+            });
+          }
+        }).catch(error => {
+          // Network error
+          alert('Oops! There was a problem submitting your form. Please try again or email me directly at bernardolandley@outlook.com');
+        }).finally(() => {
+          // Reset button state
+          submitButton.innerHTML = originalButtonText;
+          submitButton.disabled = false;
+        });
+      });
+    </script>
   </body>
 </html>
