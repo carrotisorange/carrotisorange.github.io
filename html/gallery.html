@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Andy's Gallery - Andy Bernardo | Personal Photo Gallery</title>
+    <title>Personal Photo Gallery</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     
@@ -28,6 +28,311 @@
             box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
             position: relative;
             overflow: hidden;
+        }
+
+        /* Location navigation */
+        .location-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .location-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .location-btn:hover, .location-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Location sections */
+        .location-section {
+            margin-bottom: 60px;
+        }
+
+        .location-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(65, 105, 225, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(65, 105, 225, 0.2);
+        }
+
+        .location-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4169E1;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .location-subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .location-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .location-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .location-stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4169E1;
+        }
+
+        .location-stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Folder Cards Styles */
+        .folders-view {
+            margin-top: 40px;
+        }
+
+        .folders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .folder-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .folder-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border-color: #4169E1;
+        }
+
+        .folder-preview {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .folder-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .folder-card:hover .folder-thumbnail {
+            transform: scale(1.1);
+        }
+
+        .folder-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(65, 105, 225, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .folder-card:hover .folder-overlay {
+            opacity: 1;
+        }
+
+        .folder-icon {
+            color: white;
+            font-size: 48px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .folder-info {
+            padding: 25px;
+        }
+
+        .folder-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 10px 0;
+            line-height: 1.2;
+        }
+
+        .folder-description {
+            color: #718096;
+            font-size: 14px;
+            margin: 0 0 15px 0;
+            line-height: 1.4;
+        }
+
+        .folder-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .photo-count {
+            color: #4169E1;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .date-range {
+            color: #a0aec0;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Back Navigation */
+        .back-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            padding: 15px 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #4169E1;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #4169E1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #3152c7;
+            transform: translateX(-5px);
+        }
+
+        .current-folder-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .current-folder-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .current-folder-count {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        /* Images View */
+        .images-view {
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .folders-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .folder-preview {
+                height: 180px;
+            }
+
+            .folder-info {
+                padding: 20px;
+            }
+
+            .folder-title {
+                font-size: 20px;
+            }
+
+            .back-navigation {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .current-folder-info {
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .folders-grid {
+                padding: 10px 0;
+            }
+
+            .folder-preview {
+                height: 150px;
+            }
+
+            .folder-info {
+                padding: 15px;
+            }
+
+            .folder-title {
+                font-size: 18px;
+            }
+
+            .folder-description {
+                font-size: 13px;
+            }
         }
 
         .gallery-header::before {
@@ -232,6 +537,94 @@
             /* Disable right-click context menu */
             -webkit-touch-callout: none;
             -webkit-tap-highlight-color: transparent;
+            /* Loading animation */
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .post-image img.loaded {
+            opacity: 1;
+        }
+
+        /* Loading skeleton animation */
+        .post-image.loading {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-image.loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 100%
+            );
+            animation: shimmer 2s infinite;
+            z-index: 1;
+        }
+
+        .post-image.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Loading text indicator */
+        .loading-text {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 3;
+            opacity: 0;
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
         }
         
         .post-actions {
@@ -547,6 +940,28 @@
             .stat-label {
                 font-size: 11px;
             }
+            
+            .location-nav {
+                gap: 8px;
+                margin: 20px 0;
+            }
+            
+            .location-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            
+            .location-title {
+                font-size: 24px;
+            }
+            
+            .location-subtitle {
+                font-size: 14px;
+            }
+            
+            .location-stats {
+                gap: 20px;
+            }
         }
 
         /* Modal Styles */
@@ -620,6 +1035,39 @@
             -o-user-drag: none;
             -webkit-touch-callout: none;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Modal loading states */
+        .modal-image-container.loading {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-image-container.loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                transparent 100%
+            );
+            animation: modalShimmer 2s infinite;
+            z-index: 1;
+        }
+
+        @keyframes modalShimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .modal-actions {
@@ -755,338 +1203,143 @@
             <div class="header-content">
                 <div class="title-section">
                     <h1>📸 Gallery</h1>
-                    <p>Collection of memorable moments and special memories</p>
+                    <p>Explore the beauty of the World</p>
                 </div>
                 <div class="header-stats">
                     <div class="stat-item">
-                        <span class="stat-number">13</span>
+                        <span class="stat-number">16</span>
                         <span class="stat-label">Images</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">0</span>
-                        <span class="stat-label">Likes</span>
+                        <span class="stat-number">5</span>
+                        <span class="stat-label">Locations</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">0</span>
-                        <span class="stat-label">Saved</span>
+                        <span class="stat-label">Favorites</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="posts-grid">
-            <!-- Post 1 - IMG_8067 -->
-            <article class="post medium" data-post-id="1">
-                <div class="post-image">
-                    <img src="/images/IMG_8067.JPEG" alt="IMG_8067">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
+        <!-- Back Navigation (hidden by default) -->
+        <div class="back-navigation" id="backNav" style="display: none;">
+            <button class="back-btn" onclick="showFoldersView()">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Folders</span>
+            </button>
+            <div class="current-folder-info">
+                <span class="current-folder-name"></span>
+                <span class="current-folder-count"></span>
+            </div>
+        </div>
 
-            <!-- Post 2 - IMG_8070 -->
-            <article class="post tall" data-post-id="2">
-                <div class="post-image">
-                    <img src="/images/IMG_8070.JPEG" alt="IMG_8070">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+        <!-- Folders View -->
+        <div class="folders-view" id="foldersView">
+            <div class="folders-grid">
+                <div class="folder-card" onclick="openFolder('tagaytay')">
+                    <div class="folder-preview">
+                        <img src="/images/Tagaytay/IMG_8067.JPEG" alt="Tagaytay Preview" class="folder-thumbnail">
+                        <div class="folder-overlay">
+                            <div class="folder-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
                         </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
+                    </div>
+                    <div class="folder-info">
+                        <h3 class="folder-title">🌋 Tagaytay City</h3>
+                        <p class="folder-description">Cool mountain breeze and scenic views</p>
+                        <div class="folder-stats">
+                            <span class="photo-count">11 photos</span>
+                            <span class="date-range">2021-2024</span>
                         </div>
                     </div>
                 </div>
-            </article>
 
-            <!-- Post 3 - IMG_8078 -->
-            <article class="post short" data-post-id="3">
-                <div class="post-image">
-                    <img src="/images/IMG_8078.JPG" alt="IMG_8078">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+                <div class="folder-card" onclick="openFolder('batangas')">
+                    <div class="folder-preview">
+                        <img src="/images/Batangas/IMG_8070.JPEG" alt="Batangas Preview" class="folder-thumbnail">
+                        <div class="folder-overlay">
+                            <div class="folder-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
                         </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
+                    </div>
+                    <div class="folder-info">
+                        <h3 class="folder-title">🏖️ Batangas</h3>
+                        <p class="folder-description">Beautiful beaches and coastal views</p>
+                        <div class="folder-stats">
+                            <span class="photo-count">2 photos</span>
+                            <span class="date-range">2022-2024</span>
                         </div>
                     </div>
                 </div>
-            </article>
 
-            <!-- Post 4 - IMG_8081 -->
-            <article class="post medium" data-post-id="4">
-                <div class="post-image">
-                    <img src="/images/IMG_8081.JPG" alt="IMG_8081">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+                <div class="folder-card" onclick="openFolder('baguio')">
+                    <div class="folder-preview">
+                        <img src="/images/Baguio/IMG_2239.JPEG" alt="Baguio Preview" class="folder-thumbnail">
+                        <div class="folder-overlay">
+                            <div class="folder-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
                         </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
+                    </div>
+                    <div class="folder-info">
+                        <h3 class="folder-title">🏔️ Baguio City</h3>
+                        <p class="folder-description">Summer capital of the Philippines</p>
+                        <div class="folder-stats">
+                            <span class="photo-count">1 photo</span>
+                            <span class="date-range">2023</span>
                         </div>
                     </div>
                 </div>
-            </article>
 
-            <!-- Post 5 - IMG_8084 -->
-            <article class="post tall" data-post-id="5">
-                <div class="post-image">
-                    <img src="/images/IMG_8084.JPG" alt="IMG_8084">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+                <div class="folder-card" onclick="openFolder('bgc')">
+                    <div class="folder-preview">
+                        <img src="/images/Bonifacio Global City/IMG_8188.JPEG" alt="BGC Preview" class="folder-thumbnail">
+                        <div class="folder-overlay">
+                            <div class="folder-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
                         </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
+                    </div>
+                    <div class="folder-info">
+                        <h3 class="folder-title">🏢 Bonifacio Global City</h3>
+                        <p class="folder-description">Modern business district</p>
+                        <div class="folder-stats">
+                            <span class="photo-count">1 photo</span>
+                            <span class="date-range">2024</span>
                         </div>
                     </div>
                 </div>
-            </article>
 
-            <!-- Post 6 - IMG_8089 -->
-            <article class="post medium" data-post-id="6">
-                <div class="post-image">
-                    <img src="/images/IMG_8089.JPG" alt="IMG_8089">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+                <div class="folder-card" onclick="openFolder('tarlac')">
+                    <div class="folder-preview">
+                        <img src="/images/Tarlac/IMG_8186.JPG" alt="Tarlac Preview" class="folder-thumbnail">
+                        <div class="folder-overlay">
+                            <div class="folder-icon">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
                         </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
+                    </div>
+                    <div class="folder-info">
+                        <h3 class="folder-title">🌾 Tarlac</h3>
+                        <p class="folder-description">Agricultural landscapes and nature</p>
+                        <div class="folder-stats">
+                            <span class="photo-count">1 photo</span>
+                            <span class="date-range">2024</span>
                         </div>
                     </div>
                 </div>
-            </article>
+            </div>
+        </div>
 
-            <!-- Post 7 - IMG_8093 -->
-            <article class="post short" data-post-id="7">
-                <div class="post-image">
-                    <img src="/images/IMG_8093.JPG" alt="IMG_8093">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Post 8 - IMG_8103 -->
-            <article class="post medium" data-post-id="8">
-                <div class="post-image">
-                    <img src="/images/IMG_8103.JPG" alt="IMG_8103">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Post 9 - IMG_8110 -->
-            <article class="post tall" data-post-id="9">
-                <div class="post-image">
-                    <img src="/images/IMG_8110.JPG" alt="IMG_8110">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Post 10 - IMG_8111 -->
-            <article class="post medium" data-post-id="10">
-                <div class="post-image">
-                    <img src="/images/IMG_8111.JPG" alt="IMG_8111">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Post 11 - IMG_8124 -->
-            <article class="post short" data-post-id="11">
-                <div class="post-image">
-                    <img src="/images/IMG_8124.JPEG" alt="IMG_8124">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Post 12 - IMG_8127 -->
-            <article class="post medium" data-post-id="12">
-                <div class="post-image">
-                    <img src="/images/IMG_8127.JPEG" alt="IMG_8127">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <!-- Post 13 - IMG_8188 -->
-            <article class="post tall" data-post-id="13">
-                <div class="post-image">
-                    <img src="/images/IMG_8188.JPEG" alt="IMG_8188">
-                    <div class="post-overlay">
-                        <div class="post-stats">
-                            <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
-                            <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn like-btn" data-action="like">
-                                <i class="far fa-heart"></i>
-                            </button>
-                            <button class="action-btn share-btn" data-action="share">
-                                <i class="far fa-paper-plane"></i>
-                            </button>
-                            <button class="action-btn bookmark-btn" data-action="bookmark">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        </div> <!-- posts-grid -->
+        <!-- Images View (initially hidden) -->
+        <div class="images-view" id="imagesView" style="display: none;">
+            <div class="posts-grid" id="currentFolderImages">
+                <!-- Images will be dynamically loaded here -->
+            </div>
+        </div>
     </div> <!-- gallery-container -->
 
     <!-- Image Modal -->
@@ -1121,6 +1374,144 @@
     </div>
 
     <script>
+        // Folder data structure
+        const folderData = {
+            tagaytay: {
+                name: '🌋 Tagaytay City',
+                description: 'Cool mountain breeze and scenic views',
+                images: [
+                    { src: '/images/Tagaytay/IMG_8067.JPEG', alt: 'Tagaytay View 1', id: 1 },
+                    { src: '/images/Tagaytay/IMG_8078.JPG', alt: 'Tagaytay View 2', id: 2 },
+                    { src: '/images/Tagaytay/IMG_8081.JPG', alt: 'Tagaytay View 3', id: 3 },
+                    { src: '/images/Tagaytay/IMG_8084.JPG', alt: 'Tagaytay View 4', id: 4 },
+                    { src: '/images/Tagaytay/IMG_8089.JPG', alt: 'Tagaytay View 5', id: 5 },
+                    { src: '/images/Tagaytay/IMG_8093.JPG', alt: 'Tagaytay View 6', id: 6 },
+                    { src: '/images/Tagaygtay/IMG_8103.JPG', alt: 'Tagaytay View 7', id: 7 },
+                    { src: '/images/Tagaytay/IMG_8110.JPG', alt: 'Tagaytay View 8', id: 8 },
+                    { src: '/images/Tagaytay/IMG_8111.JPG', alt: 'Tagaytay View 9', id: 9 },
+                    { src: '/images/Tagaytay/IMG_8127.JPEG', alt: 'Tagaytay View 10', id: 10 },
+                    { src: '/images/Tagaytay/IMG_8133.JPG', alt: 'Tagaytay View 11', id: 11 }
+                ]
+            },
+            batangas: {
+                name: '🏖️ Batangas',
+                description: 'Beautiful beaches and coastal views',
+                images: [
+                    { src: '/images/Batangas/IMG_8070.JPEG', alt: 'Batangas Beach 1', id: 12 },
+                    { src: '/images/Batangas/IMG_8124.JPEG', alt: 'Batangas Beach 2', id: 13 }
+                ]
+            },
+            baguio: {
+                name: '🏔️ Baguio City',
+                description: 'Summer capital of the Philippines',
+                images: [
+                    { src: '/images/Baguio/IMG_2239.JPEG', alt: 'Baguio Mountain View', id: 14 }
+                ]
+            },
+            bgc: {
+                name: '🏢 Bonifacio Global City',
+                description: 'Modern business district',
+                images: [
+                    { src: '/images/Bonifacio Global City/IMG_8188.JPEG', alt: 'BGC Skyline', id: 15 }
+                ]
+            },
+            tarlac: {
+                name: '🌾 Tarlac',
+                description: 'Agricultural landscapes and nature',
+                images: [
+                    { src: '/images/Tarlac/IMG_8186.JPG', alt: 'Tarlac Landscape', id: 16 }
+                ]
+            }
+        };
+
+        // Current state
+        let currentFolder = null;
+
+        // Folder navigation functions
+        function openFolder(folderId) {
+            currentFolder = folderId;
+            const folder = folderData[folderId];
+            
+            if (!folder) return;
+
+            // Hide folders view and show images view
+            document.getElementById('foldersView').style.display = 'none';
+            document.getElementById('imagesView').style.display = 'block';
+            document.getElementById('backNav').style.display = 'flex';
+
+            // Update back navigation info
+            document.querySelector('.current-folder-name').textContent = folder.name;
+            document.querySelector('.current-folder-count').textContent = `${folder.images.length} photos`;
+
+            // Load images for this folder
+            loadFolderImages(folder);
+        }
+
+        function showFoldersView() {
+            currentFolder = null;
+            
+            // Show folders view and hide images view
+            document.getElementById('foldersView').style.display = 'block';
+            document.getElementById('imagesView').style.display = 'none';
+            document.getElementById('backNav').style.display = 'none';
+
+            // Clear current folder images
+            document.getElementById('currentFolderImages').innerHTML = '';
+        }
+
+        function loadFolderImages(folder) {
+            const container = document.getElementById('currentFolderImages');
+            container.innerHTML = '';
+
+            folder.images.forEach((image, index) => {
+                const article = document.createElement('article');
+                article.className = index % 4 === 0 ? 'post large' : 'post medium';
+                article.setAttribute('data-post-id', image.id);
+                article.setAttribute('data-location', currentFolder);
+
+                article.innerHTML = `
+                    <div class="post-image">
+                        <img src="${image.src}" alt="${image.alt}" loading="lazy">
+                        <div class="post-overlay">
+                            <div class="post-stats">
+                                <span><i class="far fa-heart"></i> <span class="like-count">0</span></span>
+                                <span><i class="far fa-comment"></i> <span class="comment-count">0</span></span>
+                            </div>
+                            <div class="post-actions">
+                                <button class="action-btn like-btn" data-action="like">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="action-btn share-btn" data-action="share">
+                                    <i class="far fa-paper-plane"></i>
+                                </button>
+                                <button class="action-btn bookmark-btn" data-action="bookmark">
+                                    <i class="far fa-bookmark"></i>
+                                </button>
+                                <button class="action-btn comment-btn" data-action="comment">
+                                    <i class="far fa-comment"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                        <div class="image-skeleton">
+                            <div class="skeleton-shimmer"></div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(article);
+            });
+
+            // Reinitialize functionality for new images
+            initializeImageLoading();
+            initializeModalFunctionality();
+            loadLikesFromStorage();
+            loadBookmarksFromStorage();
+            loadCommentsFromStorage();
+        }
+
         // Initialize like counts from localStorage
         document.addEventListener('DOMContentLoaded', function() {
             loadLikesFromStorage();
@@ -1128,6 +1519,8 @@
             loadCommentsFromStorage();
             initializeModalFunctionality();
             initializeImageProtection();
+            initializeImageLoading();
+            // Remove initializeLocationNavigation() since we're using folder navigation now
         });
 
         // Image protection functionality
@@ -1182,7 +1575,7 @@
             style.textContent = `
                 .post-image::after,
                 .modal-image-container::after {
-                    content: '© Andy Bernardo';
+                    content: '© Landley Bernardo';
                     position: absolute;
                     bottom: 10px;
                     right: 10px;
@@ -1195,6 +1588,123 @@
                 }
             `;
             document.head.appendChild(style);
+        }
+
+        // Image loading functionality with improved animations
+        function initializeImageLoading() {
+            // Get all post containers
+            const posts = document.querySelectorAll('.post');
+            
+            posts.forEach((post, index) => {
+                const postImage = post.querySelector('.post-image');
+                const img = postImage.querySelector('img');
+                
+                if (!img) return;
+                
+                // Add loading state initially
+                postImage.classList.add('loading');
+                
+                // Add loading text
+                const loadingText = document.createElement('div');
+                loadingText.className = 'loading-text';
+                loadingText.textContent = 'Loading...';
+                postImage.appendChild(loadingText);
+                
+                // Create a new image to handle loading
+                const imageLoader = new Image();
+                
+                imageLoader.onload = function() {
+                    // Add a slight delay for better UX (staggered loading)
+                    setTimeout(() => {
+                        // Remove loading state
+                        postImage.classList.remove('loading');
+                        loadingText.remove();
+                        
+                        // Add loaded class to trigger fade-in animation
+                        img.classList.add('loaded');
+                        
+                        // Optional: Add a subtle entrance animation
+                        postImage.style.transform = 'scale(0.95)';
+                        postImage.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                        
+                        requestAnimationFrame(() => {
+                            postImage.style.transform = 'scale(1)';
+                        });
+                        
+                    }, index * 100); // Stagger by 100ms per image
+                };
+                
+                imageLoader.onerror = function() {
+                    // Handle loading error
+                    setTimeout(() => {
+                        postImage.classList.remove('loading');
+                        loadingText.textContent = 'Failed to load';
+                        loadingText.style.color = 'rgba(255, 100, 100, 0.9)';
+                        
+                        // Remove error message after a delay
+                        setTimeout(() => {
+                            loadingText.remove();
+                        }, 2000);
+                    }, index * 100);
+                };
+                
+                // Start loading the image
+                imageLoader.src = img.src;
+            });
+        }
+
+        // Location navigation functionality
+        function initializeLocationNavigation() {
+            const locationBtns = document.querySelectorAll('.location-btn');
+            const locationSections = document.querySelectorAll('.location-section');
+            
+            // Handle location button clicks
+            locationBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all buttons
+                    locationBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Get target location
+                    const targetLocation = this.getAttribute('href').substring(1);
+                    
+                    // Scroll to target section
+                    const targetSection = document.getElementById(targetLocation);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Update active location based on scroll position
+            window.addEventListener('scroll', function() {
+                let current = '';
+                const scrollPosition = window.pageYOffset + 200; // Offset for better UX
+                
+                locationSections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        current = sectionId;
+                    }
+                });
+                
+                // Update active button
+                locationBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('href') === '#' + current) {
+                        btn.classList.add('active');
+                    }
+                });
+            });
         }
 
         // Modal functionality
@@ -1239,15 +1749,71 @@
                 modalContainer.innerHTML = '';
                 
                 if (img) {
-                    // Copy image to modal
+                    // Add loading state to modal
+                    modalContainer.classList.add('loading');
+                    
+                    // Add loading spinner to modal
+                    const modalLoader = document.createElement('div');
+                    modalLoader.innerHTML = `
+                        <div style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            text-align: center;
+                            color: white;
+                        ">
+                            <div style="
+                                width: 40px;
+                                height: 40px;
+                                border: 3px solid rgba(255, 255, 255, 0.3);
+                                border-top: 3px solid white;
+                                border-radius: 50%;
+                                animation: spin 1s linear infinite;
+                                margin: 0 auto 15px;
+                            "></div>
+                            <div style="font-size: 14px; opacity: 0.9;">Loading image...</div>
+                        </div>
+                    `;
+                    modalContainer.appendChild(modalLoader);
+                    
+                    // Create modal image with loading handling
                     const modalImg = document.createElement('img');
-                    modalImg.src = img.src;
-                    modalImg.alt = img.alt;
                     modalImg.style.width = '100%';
                     modalImg.style.height = '100%';
                     modalImg.style.objectFit = 'contain';
                     modalImg.style.borderRadius = '15px';
+                    modalImg.style.opacity = '0';
+                    modalImg.style.transition = 'opacity 0.5s ease-in-out';
+                    
+                    modalImg.onload = function() {
+                        // Remove loading state
+                        modalContainer.classList.remove('loading');
+                        modalLoader.remove();
+                        
+                        // Fade in the image
+                        modalImg.style.opacity = '1';
+                    };
+                    
+                    modalImg.onerror = function() {
+                        modalContainer.classList.remove('loading');
+                        modalLoader.innerHTML = `
+                            <div style="
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                text-align: center;
+                                color: rgba(255, 100, 100, 0.9);
+                                font-size: 14px;
+                            ">Failed to load image</div>
+                        `;
+                    };
+                    
+                    modalImg.src = img.src;
+                    modalImg.alt = img.alt;
                     modalContainer.appendChild(modalImg);
+                    
                 } else if (icon) {
                     // Copy icon to modal
                     const modalIcon = document.createElement('i');
@@ -1461,7 +2027,7 @@
                 if (navigator.share) {
                     navigator.share({
                         title: 'Check out this project',
-                        text: 'Amazing work by Andy Bernardo',
+                        text: 'Amazing work by Landley Bernardo',
                         url: window.location.href
                     });
                 } else {
@@ -1531,7 +2097,7 @@
                 if (navigator.share) {
                     navigator.share({
                         title: caption,
-                        text: 'Check out this project by Andy Bernardo',
+                        text: 'Check out this project by Landley Bernardo',
                         url: window.location.href
                     });
                 } else {
