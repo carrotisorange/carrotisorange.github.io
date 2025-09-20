@@ -2,13 +2,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Andy Bernardo - Freelance Web Developer | Portfolio</title>
+    <title>Portfolio</title>
     <meta name="description" content="Experienced full-stack web developer specializing in React, Node.js, and modern web technologies. Available for freelance projects worldwide." />
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+      .profile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #4169E1;
+        box-shadow: 0 8px 32px rgba(65, 105, 225, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .profile-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 40px rgba(65, 105, 225, 0.4);
+      }
+      
+      .about-image {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body>
     <div class="hero">
@@ -29,15 +53,15 @@
       <div class="container">
         <div class="section-header">
           <span class="section-subtitle">Get to know me</span>
-          <h2>About <span>Andy</span></h2>
+          <h2>About <span>Me</span></h2>
         </div>
         <div class="about-content">
           <div class="about-text">
             <p>
-              I'm a passionate full-stack web developer with over 5 years of experience creating digital solutions that make a difference. My journey in web development started with a curiosity about how websites work, and it has evolved into a career dedicated to building exceptional user experiences.
+              I'm <span style="color: #4169E1; font-weight: 600;">Landley Bernardo</span>, an experienced Software Engineer and Co-Founder with a demonstrated history of working in the information technology and services industry. I'm skilled in Technical Support, Management, Team Leadership, SQL, and Customer Service, with a Master's degree focused in Information Technology from Saint Louis University (PH).
             </p>
             <p>
-              I specialize in modern web technologies including React, Node.js, and cloud platforms. Whether you're a startup looking to establish your digital presence or an established business seeking to modernize your web applications, I bring the expertise and dedication needed to turn your vision into reality.
+              Currently serving as a Senior Software Engineer at Straive, I develop and maintain UI and API applications, perform server maintenance, and support machine learning tasks. My experience spans from front-end development with HTML, CSS, and JavaScript to backend API development and database management. I'm passionate about converting designs into functional web applications and creating seamless user experiences.
             </p>
             <!-- <div class="about-stats">
               <div class="stat">
@@ -55,9 +79,7 @@
             </div> -->
           </div>
           <div class="about-image">
-            <div class="image-placeholder">
-              <i class="fas fa-user"></i>
-            </div>
+            <img src="/images/grad.JPEG" alt="Landley Bernardo - Graduation Photo" class="profile-image">
           </div>
         </div>
       </div>
@@ -420,22 +442,48 @@
         }
         
         let current = '';
+        const scrollPosition = window.pageYOffset;
         
         sections.forEach(section => {
           const sectionTop = section.offsetTop;
           const sectionHeight = section.clientHeight;
+          const sectionId = section.getAttribute('id');
           
-          if (window.pageYOffset >= sectionTop - 250) {
-            current = section.getAttribute('id');
+          // Skip hidden sections
+          if (section.style.display === 'none') {
+            return;
+          }
+          
+          // Check if section is in viewport
+          if (scrollPosition >= sectionTop - 100 && scrollPosition < sectionTop + sectionHeight - 100) {
+            current = sectionId;
           }
         });
         
+        // If no section is found and we're at the top, default to 'about'
+        if (!current && scrollPosition < 300) {
+          current = 'about';
+        }
+        
+        // Update nav links
         navLinks.forEach(link => {
           link.classList.remove('active');
           if (link.getAttribute('href') === '#' + current) {
             link.classList.add('active');
           }
         });
+      });
+
+      // Initialize active state on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => link.classList.remove('active'));
+        
+        // Set 'about' as active by default
+        const aboutLink = document.querySelector('a[href="#about"]');
+        if (aboutLink) {
+          aboutLink.classList.add('active');
+        }
       });
 
       // Form submission handling
