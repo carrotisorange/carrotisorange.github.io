@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio</title>
-    <meta name="description" content="Experienced full-stack web developer specializing in React, Node.js, and modern web technologies. Available for freelance projects worldwide." />
-    <link rel="stylesheet" href="../css/styles.css" />
-    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
-    
-    <!-- Font Awesome for icons -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landley Bernardo - Portfolio</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     
     <style>
       .profile-image {
@@ -33,8 +31,8 @@
         margin: 0 auto;
       }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="hero">
       <nav>
         <img src="../images/logo.png" class="logo" />
@@ -449,6 +447,53 @@
       </div>
     </section>
 
+    <!-- Chatbot Widget -->
+    <div class="chatbot-container" id="chatbot">
+        <div class="chatbot-header">
+            <div class="chatbot-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="chatbot-info">
+                <h4>Portfolio Assistant</h4>
+                <span class="status">Online</span>
+            </div>
+            <button class="chatbot-close" id="closeChatbot">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <p>Hi! I'm Landley's portfolio assistant. I can help you learn about his services, experience, and projects. What would you like to know?</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-quick-replies" id="quickReplies">
+            <button class="quick-reply" data-message="What services do you offer?">Services</button>
+            <button class="quick-reply" data-message="Tell me about your experience">Experience</button>
+            <button class="quick-reply" data-message="Show me your projects">Projects</button>
+            <button class="quick-reply" data-message="How can I contact you?">Contact</button>
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Type your message...">
+            <button id="sendMessage">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Chatbot Toggle Button -->
+    <div class="chatbot-toggle" id="chatbotToggle">
+        <i class="fas fa-comments"></i>
+        <span class="notification-badge">1</span>
+    </div>
+
     <script>
       // Smooth scrolling for navigation links
       document.querySelectorAll('.nav-link').forEach(link => {
@@ -568,6 +613,143 @@
           submitButton.disabled = false;
         });
       });
-    </script>
-  </body>
+
+      // Chatbot functionality
+    const chatbotToggle = document.getElementById('chatbotToggle');
+    const chatbot = document.getElementById('chatbot');
+    const closeChatbot = document.getElementById('closeChatbot');
+    const chatbotInput = document.getElementById('chatbotInput');
+    const sendMessage = document.getElementById('sendMessage');
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const quickReplies = document.getElementById('quickReplies');
+    const notificationBadge = document.querySelector('.notification-badge');
+
+    let isOpen = false;
+
+    // Toggle chatbot
+    chatbotToggle.addEventListener('click', () => {
+      isOpen = !isOpen;
+      chatbot.style.display = isOpen ? 'flex' : 'none';
+      if (isOpen) {
+        notificationBadge.style.display = 'none';
+        chatbotInput.focus();
+      }
+    });
+
+    closeChatbot.addEventListener('click', () => {
+      isOpen = false;
+      chatbot.style.display = 'none';
+    });
+
+    // Send message function
+    function sendUserMessage(message) {
+      addMessage(message, 'user');
+      chatbotInput.value = '';
+      
+      // Hide quick replies after first interaction
+      quickReplies.style.display = 'none';
+      
+      // Generate bot response with a small delay for better UX
+      setTimeout(() => {
+        const response = generateBotResponse(message);
+        addMessage(response, 'bot');
+      }, 500);
+    }
+
+    // Add message to chat
+    function addMessage(message, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      
+      messageDiv.innerHTML = `
+        <div class="message-avatar">
+          <i class="fas ${sender === 'bot' ? 'fa-robot' : 'fa-user'}"></i>
+        </div>
+        <div class="message-content">
+          <p>${message}</p>
+        </div>
+      `;
+      
+      chatbotMessages.appendChild(messageDiv);
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    // Generate bot response using OpenAI API
+    function generateBotResponse(userMessage) {
+      const message = userMessage.toLowerCase();
+      
+      if (message.includes('service') || message.includes('what do you do')) {
+        return "I offer 🖥️ PHP & Laravel Development, 📱 Responsive Web Design, ☁️ Cloud Deployment, 🤖 AI & ML Solutions, 🚀 Startup Development, and 🎓 Technical Consulting. Which service interests you most?";
+      }
+      
+      if (message.includes('experience') || message.includes('background')) {
+        return "I'm a Senior Software Engineer at Straive with a Master's degree in Information Technology from Saint Louis University. I specialize in AI/LLM projects and full-stack development. 🎓";
+      }
+      
+      if (message.includes('project') || message.includes('portfolio') || message.includes('work')) {
+        return "My recent projects include PropSuite (property management system), Homefie (collaboration platform), and supervised machine learning prediction systems. Check out my Portfolio section! 🚀";
+      }
+      
+      if (message.includes('contact') || message.includes('hire') || message.includes('email')) {
+        return "Reach me at bernardolandley@outlook.com or +63 975 282 6318. I'm also on LinkedIn and GitHub. Use the contact form above to discuss your project! 📧";
+      }
+      
+      if (message.includes('ai') || message.includes('machine learning') || message.includes('llm')) {
+        return "I work with AI/LLM technologies including OpenAI API, prompt engineering, document processing (PDF to XML), and supervised ML. I've built predictive analytics systems for clients! 🤖";
+      }
+      
+      if (message.includes('price') || message.includes('cost') || message.includes('budget')) {
+        return "I offer flexible budgets from under $5,000 to $25,000+ depending on project complexity. Let's discuss your specific needs for a personalized quote! 💰";
+      }
+      
+      if (message.includes('technology') || message.includes('stack') || message.includes('tech')) {
+        return "I work with PHP/Laravel, JavaScript, React, Vue.js, Python, MySQL, Digital Ocean, Laravel Forge, and AI technologies like OpenAI API and LLM prompt engineering. Check out my Skills section for the complete list! 💻";
+      }
+      
+      if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+        return "Hello! I'm here to help you learn about Landley's services and experience. What would you like to know about his work, projects, or how he can help with your next development project? 👋";
+      }
+      
+      if (message.includes('thank') || message.includes('thanks')) {
+        return "You're welcome! If you have any other questions about Landley's services or would like to start a project, feel free to reach out using the contact form. I'm here to help! 😊";
+      }
+      
+      if (message.includes('php') || message.includes('laravel')) {
+        return "Landley specializes in PHP and Laravel development! He builds robust web applications, APIs, and enterprise-level systems using modern frameworks like Laravel, Zend, and Laminas with MySQL integration. 🐘";
+      }
+      
+      if (message.includes('startup')) {
+        return "Landley has experience with startups! He completed the Dado Banatao Startup Incubator Program and specializes in developing MVPs and scalable solutions for growing businesses. Perfect for your startup needs! 🚀";
+      }
+      
+      // Default response
+      return "I can help you learn about Landley's services, experience, projects, and contact information. Try asking about his web development services, AI projects, startup experience, or how to get in touch for your next project! 🤖";
+    }
+
+    // Event listeners
+    sendMessage.addEventListener('click', () => {
+      const message = chatbotInput.value.trim();
+      if (message) {
+        sendUserMessage(message);
+      }
+    });
+
+    chatbotInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const message = chatbotInput.value.trim();
+        if (message) {
+          sendUserMessage(message);
+        }
+      }
+    });
+
+    // Quick reply buttons
+    document.querySelectorAll('.quick-reply').forEach(button => {
+      button.addEventListener('click', () => {
+        const message = button.getAttribute('data-message');
+        sendUserMessage(message);
+      });
+    });
+  </script>
+</body>
 </html>
