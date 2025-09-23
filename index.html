@@ -135,6 +135,13 @@
             <h3>AI & Machine Learning Solutions</h3>
             <p>Developing AI-powered applications using LLM prompts and machine learning technologies. Specializing in document processing, PDF to XML conversion, and data transformation for unique client requirements.</p>
           </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-gamepad"></i>
+            </div>
+            <h3>Interactive Game Development</h3>
+            <p>Creating engaging web-based games and interactive applications with smart AI logic, responsive design, and modern JavaScript techniques for entertainment and educational purposes.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -157,6 +164,8 @@
               <span class="skill-tag">Vue.js</span>
               <span class="skill-tag">Tailwind</span>
               <span class="skill-tag">Bootstrap</span>
+              <span class="skill-tag">Game Development</span>
+              <span class="skill-tag">Interactive UI/UX</span>
             </div>
           </div>
           <div class="skills-category">
@@ -275,12 +284,32 @@
               </div>
             </div>
             <div class="portfolio-content">
-              <h3><a href="/html/gallery.html">Image Gallery</a></h3>
-              <p>Responsive landing page for a photography portfolio with smooth animations and modern design.</p>
+              <h3><a href="/html/gallery.html">Photo Gallery</a></h3>
+              <p>Responsive image gallery with folder navigation, modal viewer, and interactive features like likes and bookmarks with optimized loading performance.</p>
               <div class="portfolio-tags">
                 <span>HTML5</span>
                 <span>CSS3</span>
                 <span>JavaScript</span>
+                <span>Responsive Design</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="portfolio-item">
+            <div class="portfolio-image">
+              <div class="image-placeholder">
+                <i class="fas fa-gamepad"></i>
+              </div>
+            </div>
+            <div class="portfolio-content">
+              <h3><a href="/html/tictactoe.html">Interactive Tic-Tac-Toe Game</a></h3>
+              <p>A modern, responsive Tic-Tac-Toe game featuring Player vs Player and Player vs Computer modes with smart AI, score tracking, and celebration animations.</p>
+              <div class="portfolio-tags">
+                <span>HTML5</span>
+                <span>CSS3</span>
+                <span>JavaScript</span>
+                <span>Game Development</span>
+                <span>AI Logic</span>
               </div>
             </div>
           </div>
@@ -477,6 +506,7 @@
             <button class="quick-reply" data-message="What services do you offer?">Services</button>
             <button class="quick-reply" data-message="Tell me about your experience">Experience</button>
             <button class="quick-reply" data-message="Show me your projects">Projects</button>
+            <button class="quick-reply" data-message="Tell me about your Tic-Tac-Toe game">Game</button>
             <button class="quick-reply" data-message="How can I contact you?">Contact</button>
         </div>
         
@@ -674,20 +704,28 @@
       chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     }
 
-    // Generate bot response using OpenAI API
+    // Generate bot response using enhanced knowledge base
     function generateBotResponse(userMessage) {
       const message = userMessage.toLowerCase();
       
       if (message.includes('service') || message.includes('what do you do')) {
-        return "I offer 🖥️ PHP & Laravel Development, 📱 Responsive Web Design, ☁️ Cloud Deployment, 🤖 AI & ML Solutions, 🚀 Startup Development, and 🎓 Technical Consulting. Which service interests you most?";
+        return "I offer 🖥️ PHP & Laravel Development, 📱 Responsive Web Design, ☁️ Cloud Deployment, 🤖 AI & ML Solutions, 🚀 Startup Development, 🎮 Game Development, and 🎓 Technical Consulting. Which service interests you most?";
       }
       
       if (message.includes('experience') || message.includes('background')) {
-        return "I'm a Senior Software Engineer at Straive with a Master's degree in Information Technology from Saint Louis University. I specialize in AI/LLM projects and full-stack development. 🎓";
+        return "I'm a Senior Software Engineer at Straive with a Master's degree in Information Technology from Saint Louis University. I specialize in AI/LLM projects, full-stack development, and interactive applications including games. 🎓";
       }
       
       if (message.includes('project') || message.includes('portfolio') || message.includes('work')) {
-        return "My recent projects include PropSuite (property management system), Homefie (collaboration platform), and supervised machine learning prediction systems. Check out my Portfolio section! 🚀";
+        return "My recent projects include PropSuite (property management), Homefie (collaboration platform), Machine Learning prediction systems, an Interactive Tic-Tac-Toe Game with AI, and a Photo Gallery with optimized loading. Check out my Portfolio section! 🚀";
+      }
+      
+      if (message.includes('game') || message.includes('tic tac toe') || message.includes('tictactoe')) {
+        return "I built an interactive Tic-Tac-Toe game with Player vs Player and Player vs Computer modes! It features smart AI, score tracking, celebration animations, and responsive design. You can play it right here on my portfolio! 🎮";
+      }
+      
+      if (message.includes('gallery') || message.includes('photo')) {
+        return "I created a responsive Photo Gallery with folder navigation, modal viewer, interactive features like likes/bookmarks, and optimized loading for better performance. Perfect for showcasing photography portfolios! 📸";
       }
       
       if (message.includes('contact') || message.includes('hire') || message.includes('email')) {
@@ -695,35 +733,43 @@
       }
       
       if (message.includes('ai') || message.includes('machine learning') || message.includes('llm')) {
-        return "I work with AI/LLM technologies including OpenAI API, prompt engineering, document processing (PDF to XML), and supervised ML. I've built predictive analytics systems for clients! 🤖";
+        return "I work with AI/LLM technologies including OpenAI API, prompt engineering, document processing (PDF to XML), and supervised ML. I've built predictive analytics systems and AI-powered game logic! 🤖";
       }
       
       if (message.includes('price') || message.includes('cost') || message.includes('budget')) {
-        return "I offer flexible budgets from under $5,000 to $25,000+ depending on project complexity. Let's discuss your specific needs for a personalized quote! 💰";
+        return "I offer flexible budgets from under $5,000 to $25,000+ depending on project complexity. Whether it's a simple game or complex enterprise system, let's discuss your specific needs! 💰";
       }
       
       if (message.includes('technology') || message.includes('stack') || message.includes('tech')) {
-        return "I work with PHP/Laravel, JavaScript, React, Vue.js, Python, MySQL, Digital Ocean, Laravel Forge, and AI technologies like OpenAI API and LLM prompt engineering. Check out my Skills section for the complete list! 💻";
+        return "I work with PHP/Laravel, JavaScript, React, Vue.js, Python, MySQL, Digital Ocean, Laravel Forge, Game Development logic, and AI technologies like OpenAI API. Check out my Skills section for the complete list! 💻";
       }
       
       if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-        return "Hello! I'm here to help you learn about Landley's services and experience. What would you like to know about his work, projects, or how he can help with your next development project? 👋";
+        return "Hello! I'm here to help you learn about Landley's services and experience. Want to know about his web development, AI projects, game development, or how he can help with your next project? 👋";
       }
       
       if (message.includes('thank') || message.includes('thanks')) {
-        return "You're welcome! If you have any other questions about Landley's services or would like to start a project, feel free to reach out using the contact form. I'm here to help! 😊";
+        return "You're welcome! If you have questions about Landley's services, want to try his Tic-Tac-Toe game, or would like to start a project, feel free to reach out using the contact form. I'm here to help! 😊";
       }
       
       if (message.includes('php') || message.includes('laravel')) {
-        return "Landley specializes in PHP and Laravel development! He builds robust web applications, APIs, and enterprise-level systems using modern frameworks like Laravel, Zend, and Laminas with MySQL integration. 🐘";
+        return "Landley specializes in PHP and Laravel development! He builds robust web applications, APIs, enterprise systems, and interactive applications using modern frameworks with MySQL integration. 🐘";
       }
       
       if (message.includes('startup')) {
-        return "Landley has experience with startups! He completed the Dado Banatao Startup Incubator Program and specializes in developing MVPs and scalable solutions for growing businesses. Perfect for your startup needs! 🚀";
+        return "Landley has experience with startups! He completed the Dado Banatao Startup Incubator Program and specializes in developing MVPs, games, and scalable solutions for growing businesses. Perfect for your startup needs! 🚀";
+      }
+      
+      if (message.includes('responsive') || message.includes('mobile')) {
+        return "All of Landley's projects are mobile-responsive! From the Tic-Tac-Toe game to the Photo Gallery and enterprise applications - everything works perfectly on desktop, tablet, and mobile devices. 📱";
+      }
+      
+      if (message.includes('fun') || message.includes('interactive') || message.includes('play')) {
+        return "Want something fun? Try Landley's Interactive Tic-Tac-Toe game! It features smart AI that will challenge you, celebration animations when you win, and works great on mobile. Perfect example of interactive development! 🎯";
       }
       
       // Default response
-      return "I can help you learn about Landley's services, experience, projects, and contact information. Try asking about his web development services, AI projects, startup experience, or how to get in touch for your next project! 🤖";
+      return "I can help you learn about Landley's services, experience, projects (including his new Tic-Tac-Toe game!), and contact information. Try asking about his web development, AI projects, game development, or how to get in touch! 🤖";
     }
 
     // Event listeners
