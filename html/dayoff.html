@@ -110,6 +110,124 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Calendar Styles */
+        .calendar-container {
+            margin-top: 30px;
+            background: white;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .calendar-header h2 {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 0;
+        }
+        .btn-sm {
+            background: #f0f0f0;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .btn-sm:hover {
+            background: #e0e0e0;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+        .weekday {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.8rem;
+            padding: 5px 0;
+        }
+        .calendar-day {
+            padding: 5px;
+            border-radius: 6px;
+            background: #f9f9f9;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            font-size: 0.85rem;
+            transition: transform 0.2s;
+            border: 1px solid transparent;
+        }
+        .calendar-day:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+        .calendar-day.work {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .calendar-day.off {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .calendar-day.long-off {
+            background-color: #c3e6cb;
+            font-weight: bold;
+            border-color: #28a745;
+        }
+        .calendar-day.holiday {
+            background-color: #fff3cd;
+            color: #856404;
+            border-color: #ffeeba;
+        }
+        .calendar-day.today {
+            box-shadow: 0 0 0 2px #4169E1 inset;
+        }
+        .calendar-day.selected {
+            background-color: #4169E1 !important;
+            color: white !important;
+            border-color: #4169E1 !important;
+        }
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.8rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot.work { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .dot.off { background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .dot.long-off { background-color: #c3e6cb; border: 2px solid #28a745; }
+        .dot.holiday { background-color: #fff3cd; border: 1px solid #ffeeba; }
     </style>
 </head>
 <body>
@@ -131,6 +249,12 @@
             <div class="checker-header">
                 <h1>Day Off Checker</h1>
                 <p>Determine if today is a day off based on your criteria</p>
+                
+                <!-- Real-time Status Area -->
+                <div id="realTimeStatus" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
+                    <div id="rtClock" style="font-weight: bold; color: #2c3e50; font-size: 1.1em;">Loading time...</div>
+                    <div id="rtWorkState" style="margin-top: 5px;"></div>
+                </div>
             </div>
 
             <div id="resultBox" class="result-box">
@@ -170,6 +294,32 @@
                 <button type="submit" class="btn btn-check">Check Status</button>
             </form>
 
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prevMonth" class="btn-sm"><i class="fas fa-chevron-left"></i></button>
+                    <h2 id="monthYear">Month Year</h2>
+                    <button id="nextMonth" class="btn-sm"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Grid generated by JS -->
+                </div>
+                <div class="calendar-legend">
+                    <div class="legend-item"><span class="dot work"></span> Work</div>
+                    <div class="legend-item"><span class="dot off"></span> Off</div>
+                    <div class="legend-item"><span class="dot long-off"></span> 3-Day Off</div>
+                </div>
+            </div>
+
+            <!-- New DB-Free Features -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                <button id="btnFindBreaks" class="btn" style="background: #1abc9c; border: none;"><i class="fas fa-plane-departure"></i> Maximize Leave</button>
+                <button id="btnDownloadIcs" class="btn" style="background: #34495e; border: none;"><i class="fas fa-file-export"></i> Save to Phone</button>
+            </div>
+            
+            <div id="plannerResults" class="result-box" style="display:none; margin-top: 15px; background: #f0f3f5; border-left: 5px solid #1abc9c;">
+                <h3 style="color: #2c3e50; font-size: 1.1em; margin-bottom: 10px;">Recommended Leave Dates</h3>
+                <div id="plannerList"></div>
+            </div>
 
             <div style="text-align: center;">
                 <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
@@ -390,7 +540,299 @@
                 resultTitle.textContent = "It's a Work Day";
                 resultMessage.innerHTML = reason + " time to grind!" + dayDisplay;
             }
+
         });
+
+        // Calendar Logic
+        let currentCalendarDate = new Date();
+
+        function generateCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            // Update Header
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('monthYear').innerText = `${monthNames[month]} ${year}`;
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = ""; // Clear existing
+
+            // Days of week header
+            const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            days.forEach(d => {
+                const el = document.createElement('div');
+                el.className = 'calendar-day-header';
+                el.innerText = d;
+                grid.appendChild(el);
+            });
+
+            // Calculate cycle info
+            const startDateStr = document.getElementById('startDate').value;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            // Empty slots for days before 1st
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const el = document.createElement('div');
+                el.className = 'calendar-day empty';
+                grid.appendChild(el);
+            }
+
+            // Fill days
+            for (let d = 1; d <= lastDay.getDate(); d++) {
+                const currentDateUTC = new Date(Date.UTC(year, month, d));
+                
+                // To get startDate UTC
+                const [sy, sm, sd] = startDateStr.split('-').map(Number);
+                const startUTC = new Date(Date.UTC(sy, sm - 1, sd));
+                
+                const diffTime = currentDateUTC - startUTC;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const dayInCycle = ((diffDays % 14) + 14) % 14;
+
+                const cyclePattern = [
+                    true, true,   // 0-1 Work
+                    false, false, false, // 2-4 Off (3)
+                    true, true, true,  // 5-7 Work
+                    false, false, // 8-9 Off (2)
+                    true, true,   // 10-11 Work
+                    false, false  // 12-13 Off (2)
+                ];
+                
+                const isWorkDay = cyclePattern[dayInCycle];
+
+                const el = document.createElement('div');
+                el.className = 'calendar-day';
+                
+                if (!isWorkDay) {
+                    // Check if long weekend (days 2, 3, 4)
+                    if (dayInCycle >= 2 && dayInCycle <= 4) el.classList.add('long-off');
+                    else el.classList.add('off');
+                } else {
+                    el.classList.add('work');
+                }
+
+                el.innerText = d;
+                grid.appendChild(el);
+            }
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            generateCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            generateCalendar();
+        });
+
+        // Initialize Calendar
+        generateCalendar();
+        
+        // Refresh calendar if start date changes
+        document.getElementById('startDate').addEventListener('change', () => {
+             generateCalendar();
+             updateRealTimeStatus();
+             document.getElementById('plannerResults').style.display = 'none'; // Hide old results
+        });
+
+        // -------------------------
+        // FEATURE 1: VACATION OPTIMIZER
+        // -------------------------
+        document.getElementById('btnFindBreaks').addEventListener('click', () => {
+             const startDateStr = document.getElementById('startDate').value;
+             const [sy, sm, sd] = startDateStr.split('-').map(Number);
+             const startUTC = new Date(Date.UTC(sy, sm - 1, sd));
+             
+             const list = document.getElementById('plannerList');
+             list.innerHTML = "";
+             
+             // Look ahead 6 months
+             const today = new Date();
+             today.setHours(0,0,0,0);
+             
+             let foundCount = 0;
+             const monthsToCheck = 6;
+             
+             // Iterate day by day? Or jump by cycle? Jumping by cycle is safer.
+             // We just need to find instances where dayInCycle is 0 (Start) or 5 (Middle)
+             
+             for (let i = 0; i < 30 * monthsToCheck; i++) {
+                 const current = new Date(today);
+                 current.setDate(today.getDate() + i);
+                 
+                 // Calc day in cycle
+                 const currentUTC = new Date(Date.UTC(current.getFullYear(), current.getMonth(), current.getDate()));
+                 const diffTime = currentUTC - startUTC;
+                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                 const dayInCycle = ((diffDays % 14) + 14) % 14;
+
+                 // Strategy A: Connect Pre-Cycle Off + 2 Work + 3 Off (Cycle Days 0-1)
+                 // Need to take Days 0 & 1 off.
+                 if (dayInCycle === 0) {
+                     const dateStart = new Date(current);
+                     const dateEnd = new Date(current); dateEnd.setDate(dateStart.getDate() + 1);
+                     
+                     const rangeStart = new Date(current); rangeStart.setDate(rangeStart.getDate() - 2); // The 2 days off before
+                     const rangeEnd = new Date(current); rangeEnd.setDate(rangeEnd.getDate() + 4); // The 3 days off after
+                     
+                     addApp(list, "Take 2 Days, Get 7 Off", 
+                            `${fmt(dateStart)} - ${fmt(dateEnd)}`, 
+                            `${fmt(rangeStart)} to ${fmt(rangeEnd)}`);
+                     foundCount++;
+                 }
+                 
+                 // Strategy B: Connect 3 Off + 3 Work + 2 Off (Cycle Days 5-7)
+                 // Need to take Days 5, 6, 7 off.
+                 if (dayInCycle === 5) {
+                     const dateStart = new Date(current);
+                     const dateEnd = new Date(current); dateEnd.setDate(dateStart.getDate() + 2);
+                     
+                     const rangeStart = new Date(current); rangeStart.setDate(rangeStart.getDate() - 3); // The 3 days off before
+                     const rangeEnd = new Date(current); rangeEnd.setDate(rangeEnd.getDate() + 4); // The 2 days off after
+                     
+                     addApp(list, "Take 3 Days, Get 8 Off", 
+                            `${fmt(dateStart)} - ${fmt(dateEnd)}`, 
+                            `${fmt(rangeStart)} to ${fmt(rangeEnd)}`);
+                     foundCount++;
+                 }
+
+                 if (foundCount > 5) break; 
+             }
+             
+             document.getElementById('plannerResults').style.display = 'block';
+        });
+
+        function fmt(d) {
+             return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function addApp(container, title, leaveDates, totalRange) {
+            const div = document.createElement('div');
+            div.style.marginBottom = "10px";
+            div.style.padding = "10px";
+            div.style.background = "white";
+            div.style.borderRadius = "5px";
+            div.style.borderLeft = "4px solid #f1c40f"; // Yellow for opportunity
+            if (title.includes("8 Off")) div.style.borderLeft = "4px solid #e74c3c"; // Red for HOT
+            
+            div.innerHTML = `<strong>${title}</strong><br>
+                             <span style="font-size:0.9em">Use Leave: ${leaveDates}</span><br>
+                             <span style="color:green; font-weight:600">Off: ${totalRange}</span>`;
+            container.appendChild(div);
+        }
+
+        // -------------------------
+        // FEATURE 2: ICS EXPORT
+        // -------------------------
+        document.getElementById('btnDownloadIcs').addEventListener('click', () => {
+             const startDateStr = document.getElementById('startDate').value;
+             const [sy, sm, sd] = startDateStr.split('-').map(Number);
+             const startUTC = new Date(Date.UTC(sy, sm - 1, sd));
+             
+             let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//DayOffChecker//EN\n";
+             
+             // Export next 3 months
+             const today = new Date();
+             for (let i = 0; i < 90; i++) {
+                 const d = new Date(today);
+                 d.setDate(today.getDate() + i);
+                 
+                 const dUTC = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+                 const diff = Math.floor((dUTC - startUTC) / (1000 * 60 * 60 * 24));
+                 const cycle = ((diff % 14) + 14) % 14;
+                 const pattern = [true,true,false,false,false,true,true,true,false,false,true,true,false,false];
+                 
+                 const isWork = pattern[cycle];
+                 if (isWork) {
+                     // Create Event 7am to 7pm
+                     const year = d.getFullYear();
+                     const month = (d.getMonth()+1).toString().padStart(2,'0');
+                     const day = d.getDate().toString().padStart(2,'0');
+                     
+                     const dtStart = `${year}${month}${day}T070000`; // 7am Local (Floating)
+                     const dtEnd = `${year}${month}${day}T190000`;   // 7pm Local
+                     
+                     icsContent += "BEGIN:VEVENT\n";
+                     icsContent += `SUMMARY:Work Shift (Cycle Day ${cycle+1})\n`;
+                     icsContent += `DTSTART;TZID=America/New_York:${dtStart}\n`;
+                     icsContent += `DTEND;TZID=America/New_York:${dtEnd}\n`;
+                     icsContent += "END:VEVENT\n";
+                 }
+             }
+             
+             icsContent += "END:VCALENDAR";
+             
+             const blob = new Blob([icsContent], { type: 'text/calendar' });
+             const url = window.URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             a.download = "myschedule.ics";
+             document.body.appendChild(a);
+             a.click();
+             document.body.removeChild(a);
+        });
+
+        // Real-Time Status Logic
+        function updateRealTimeStatus() {
+            const startDateStr = document.getElementById('startDate').value;
+            if (!startDateStr) return;
+
+            // 1. Get current time in America/New_York
+            const now = new Date();
+            const timeZone = 'America/New_York';
+            const nyTimeString = now.toLocaleTimeString('en-US', { timeZone: timeZone, hour12: true });
+            const nyDateString = now.toLocaleDateString('en-US', { timeZone: timeZone, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            document.getElementById('rtClock').innerHTML = `US Eastern Time: ${nyTimeString}<br><span style="font-size: 0.8em; font-weight: normal;">${nyDateString}</span>`;
+
+            // 2. Determine "Status"
+            // Schedule: 7 AM to 7 PM Eastern (07:00 - 19:00)
+            const nyDate = new Date(now.toLocaleString("en-US", {timeZone: timeZone}));
+            const hour = nyDate.getHours(); // 0-23
+            const isShiftTime = (hour >= 7 && hour < 19);
+
+            // 3. Check Cycle for "Today" (nyDate)
+            const [sy, sm, sd] = startDateStr.split('-').map(Number);
+            const startCheck = new Date(Date.UTC(sy, sm - 1, sd)); // Cycle Base
+             
+            // Current Date in UTC for calculation
+            const currentCheck = new Date(Date.UTC(nyDate.getFullYear(), nyDate.getMonth(), nyDate.getDate()));
+            
+            const diffTime = currentCheck - startCheck;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const dayInCycle = ((diffDays % 14) + 14) % 14;
+
+            const cyclePattern = [
+                true, true,   // 0-1 Work
+                false, false, false, // 2-4 Off (3)
+                true, true, true,  // 5-7 Work
+                false, false, // 8-9 Off (2)
+                true, true,   // 10-11 Work
+                false, false  // 12-13 Off (2)
+            ];
+
+            const isRestDay = !cyclePattern[dayInCycle];
+            const statusDiv = document.getElementById('rtWorkState');
+
+            if (isRestDay) {
+                statusDiv.innerHTML = `<span style="color: #28a745; font-weight: bold;">● Currently Off</span> (Scheduled Day Off)`;
+                // If it's your day off, you are not working regardless of time
+            } else {
+                // It is a Work Day
+                if (isShiftTime) {
+                    statusDiv.innerHTML = `<span style="color: #dc3545; font-weight: bold;">● Currently Working</span> (Shift: 7am - 7pm ET)`;
+                } else {
+                    statusDiv.innerHTML = `<span style="color: #ffc107; font-weight: bold;">● Off Shift</span> (Work Day, but outside 7am-7pm ET)`;
+                }
+            }
+        }
+
+        // Run immediately and every second
+        updateRealTimeStatus();
+        setInterval(updateRealTimeStatus, 1000);
     </script>
 </body>
 </html>
