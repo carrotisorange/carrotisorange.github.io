@@ -9,8 +9,9 @@
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <style>
         body {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding-top: 100px;
+            min-height: 100vh;
         }
         .checker-container {
             max-width: 800px;
@@ -18,19 +19,24 @@
             padding: 40px 20px;
         }
         .checker-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
             padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
         }
         .checker-header {
             text-align: center;
             margin-bottom: 40px;
         }
         .checker-header h1 {
-            color: #333;
+            background: linear-gradient(45deg, #4169E1, #1abc9c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-size: 2.5rem;
             margin-bottom: 10px;
+            font-weight: 800;
         }
         .checker-header p {
             color: #666;
@@ -41,20 +47,24 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: #444;
             font-weight: 600;
+            font-size: 0.95rem;
         }
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 14px;
+            border: 2px solid #eef2f7;
+            border-radius: 12px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            background: #fcfcfc;
         }
         .form-control:focus {
             border-color: #4169E1;
+            box-shadow: 0 0 0 4px rgba(65, 105, 225, 0.1);
             outline: none;
+            background: #fff;
         }
         .checkbox-group {
             display: flex;
@@ -71,8 +81,74 @@
         .btn-check {
             width: 100%;
             margin-top: 20px;
+            padding: 14px;
             font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #4169E1, #2952d3);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(65, 105, 225, 0.3);
         }
+        .btn.btn-check:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(65, 105, 225, 0.4);
+        }
+
+        /* Action Buttons Styling */
+        .action-buttons-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-direction: column; /* Default to stacked for mobile */
+        }
+        .btn-action {
+            width: 100%;
+            border-radius: 50px; /* Pill shape */
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            line-height: 1.2;
+        }
+        .btn-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .btn-action i {
+            font-size: 1.5rem;
+        }
+        .btn-maximize {
+            background: #1abc9c; /* Teal */
+            color: white;
+        }
+        .btn-save {
+            background: #34495e; /* Dark Blue */
+            color: white;
+        }
+        
+        /* Mobile Specific Overrides */
+        @media (min-width: 769px) {
+            .action-buttons-container {
+               /* On desktop, maybe keep them side by side if preferred, or stacked? 
+                  User asked to maximize, stacked is big. But maybe side by side is better on wide screens.
+                  Let's make them side-by-side on desktop but still big. 
+               */
+               flex-direction: row;
+            }
+        }
+
         .result-box {
             margin-bottom: 30px;
             padding: 30px;
@@ -81,16 +157,10 @@
             display: none;
             animation: fadeIn 0.5s ease;
         }
-        .result-box.day-off {
-            background-color: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
-        }
-        .result-box.working {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
-        }
+        /* ... existing result-box colors ... */
+        .result-box.day-off { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .result-box.working { background-color: #fce8eb; color: #721c24; border: 2px solid #fadce0; }
+        
         .result-icon {
             font-size: 48px;
             margin-bottom: 15px;
@@ -105,7 +175,9 @@
             margin-top: 30px;
             color: #4169E1;
             font-weight: 600;
+            transition: color 0.3s;
         }
+        .back-link:hover { color: #2952d3; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -113,50 +185,65 @@
 
         /* Calendar Styles */
         .calendar-container {
-            margin-top: 30px;
-            background: white;
-            border-top: 1px solid #eee;
-            padding-top: 30px;
+            margin-top: 40px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
         }
         .calendar-header h2 {
-            font-size: 1.2rem;
-            color: #333;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
             margin: 0;
+            font-weight: 700;
         }
         .btn-sm {
-            background: #f0f0f0;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+            background: white;
+            border: 1px solid #eee;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.9rem;
-            transition: background 0.3s;
+            color: #666;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-sm:hover {
-            background: #e0e0e0;
+            background: #f8f9fa;
+            border-color: #ddd;
+            color: #333;
         }
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+            gap: 8px; /* Increased gap */
             text-align: center;
         }
-        .weekday {
-            font-weight: 600;
-            color: #666;
-            font-size: 0.8rem;
-            padding: 5px 0;
+        .calendar-day-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
         .calendar-day {
             padding: 5px;
-            border-radius: 6px;
-            background: #f9f9f9;
+            border-radius: 10px; /* softer formatting */
+            background: #fff;
             min-height: 40px;
             display: flex;
             flex-direction: column;
@@ -164,70 +251,144 @@
             align-items: center;
             cursor: pointer;
             position: relative;
-            font-size: 0.85rem;
-            transition: transform 0.2s;
-            border: 1px solid transparent;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid #f0f0f0;
         }
         .calendar-day:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
             z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-color: transparent;
         }
         .calendar-day.empty {
             background: transparent;
             cursor: default;
+            border: none;
         }
         .calendar-day.work {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
+            background-color: #fff;
+            color: #dc3545;
+            border-color: #fce8eb;
+        }
+        .calendar-day.work::after {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 4px;
+            background: #dc3545;
+            border-radius: 50%;
+            margin-top: 2px;
         }
         .calendar-day.off {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
+            background-color: #f0fff4;
+            color: #198754;
+            border-color: #d1e7dd;
         }
         .calendar-day.long-off {
-            background-color: #c3e6cb;
-            font-weight: bold;
-            border-color: #28a745;
-        }
-        .calendar-day.holiday {
-            background-color: #fff3cd;
-            color: #856404;
-            border-color: #ffeeba;
+            background-color: #d1e7dd;
+            color: #0f5132;
+            font-weight: 700;
+            border-color: #badbcc;
         }
         .calendar-day.today {
-            box-shadow: 0 0 0 2px #4169E1 inset;
+            border: 2px solid #4169E1;
+            color: #4169E1;
         }
-        .calendar-day.selected {
-            background-color: #4169E1 !important;
-            color: white !important;
-            border-color: #4169E1 !important;
-        }
+        
         .calendar-legend {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 20px;
+            margin-top: 20px;
             font-size: 0.8rem;
+            color: #666;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 4px 10px;
+            border-radius: 20px;
         }
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             display: inline-block;
         }
-        .dot.work { background-color: #f8d7da; border: 1px solid #f5c6cb; }
-        .dot.off { background-color: #d4edda; border: 1px solid #c3e6cb; }
-        .dot.long-off { background-color: #c3e6cb; border: 2px solid #28a745; }
-        .dot.holiday { background-color: #fff3cd; border: 1px solid #ffeeba; }
+        .dot.work { background-color: #dc3545; }
+        .dot.off { background-color: #198754; }
+        .dot.long-off { background-color: #0f5132; }
+        
+        /* Action Buttons */
+        .btn {
+             border: none;
+             color: white;
+             padding: 10px 15px;
+             border-radius: 10px;
+             font-size: 0.9rem;
+             cursor: pointer;
+             transition: opacity 0.2s;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             gap: 8px;
+        }
+        .btn:hover { opacity: 0.9; }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body { 
+                padding-top: 20px; /* Reduced padding top */
+                background: #f0f2f5; 
+            }
+            nav {
+                display: none; /* Hide top nav entirely on mobile for app-like feel */
+            }
+            .checker-container {
+                padding: 10px;
+                margin-top: 0;
+            }
+            .checker-card {
+                padding: 25px 20px;
+                border-radius: 20px;
+                box-shadow: none; /* Flatter look */
+            }
+            .checker-header {
+                margin-bottom: 25px;
+            }
+            .checker-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            /* Compact Calendar */
+            .calendar-container {
+                padding: 15px;
+                margin-top: 25px;
+            }
+            .calendar-day {
+                min-height: 38px;
+                font-size: 0.85rem;
+                padding: 2px;
+                border-radius: 8px;
+            }
+            .calendar-grid {
+                gap: 4px;
+            }
+            
+            /* Stack buttons nicely */
+            div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            #rtClock {
+                font-size: 0.95em !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -311,11 +472,17 @@
             </div>
 
             <!-- New DB-Free Features -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-                <button id="btnFindBreaks" class="btn" style="background: #1abc9c; border: none;"><i class="fas fa-plane-departure"></i> Maximize Leave</button>
-                <button id="btnDownloadIcs" class="btn" style="background: #34495e; border: none;"><i class="fas fa-file-export"></i> Save to Phone</button>
+            <div class="action-buttons-container">
+                <button id="btnFindBreaks" class="btn btn-action btn-maximize">
+                    <i class="fas fa-plane-departure"></i> 
+                    <span>MAXIMIZE<br>LEAVE</span>
+                </button>
+                <button id="btnDownloadIcs" class="btn btn-action btn-save">
+                    <i class="fas fa-file-export"></i> 
+                    <span>SAVE TO<br>PHONE</span>
+                </button>
             </div>
-            
+
             <div id="plannerResults" class="result-box" style="display:none; margin-top: 15px; background: #f0f3f5; border-left: 5px solid #1abc9c;">
                 <h3 style="color: #2c3e50; font-size: 1.1em; margin-bottom: 10px;">Recommended Leave Dates</h3>
                 <div id="plannerList"></div>
