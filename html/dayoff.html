@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Off Checker</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 100px;
+        }
+        .checker-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .checker-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        .checker-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .checker-header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .checker-header p {
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #4169E1;
+            outline: none;
+        }
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-check {
+            width: 100%;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .result-box {
+            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .result-box.day-off {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        .result-box.working {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        .result-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .result-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #4169E1;
+            font-weight: 600;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="../index.html">
+            <img src="../images/logo.png" class="logo" />
+        </a>
+        <ul>
+            <li><a href="../index.html#about">About</a></li>
+            <li><a href="../index.html#services">Services</a></li>
+            <li><a href="../index.html#portfolio">Portfolio</a></li>
+            <li><a href="../index.html#contact">Contact</a></li>
+        </ul>
+        <a href="../files/resume.pdf" target="_blank" class="btn">Resume</a>
+    </nav>
+
+    <div class="checker-container">
+        <div class="checker-card">
+            <div class="checker-header">
+                <h1>Day Off Checker</h1>
+                <p>Determine if today is a day off based on your criteria</p>
+            </div>
+
+            <div id="resultBox" class="result-box">
+                <div id="resultIcon" class="result-icon"></div>
+                <div id="resultTitle" class="result-title"></div>
+                <p id="resultMessage"></p>
+            </div>
+
+            <form id="dayOffForm">
+                <div class="form-group">
+                    <label for="checkDate">Date to Check</label>
+                    <input type="date" id="checkDate" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">Cycle Start Date (First Day of 2 Work Days)</label>
+                    <input type="date" id="startDate" class="form-control" required>
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        Pattern: 2 Work (Mon/Tue) → 3 Off (Fri/Sat/Sun) → 3 Work → 2 Off → ... (14-day Cycle)
+                    </small>
+                </div>
+
+                <div class="form-group" style="display: none;">
+                    <label>Additional Criteria</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="isHoliday"> 
+                            Is it a Public Holiday?
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="isOnLeave"> 
+                            Is Leave Approved?
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-check">Check Status</button>
+            </form>
+
+
+            <div style="text-align: center;">
+                <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Portfolio</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to today based on US Eastern Time
+        function getUSDateString() {
+            return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+        }
+        
+        document.getElementById('checkDate').value = getUSDateString();
+        // Today (Jan 16, 2026) is the 2nd day of a 2-day off period block.
+        // In our pattern (Work-Work-Off-Off-Off-Work-Work-Work-Off-Off-Work-Work-Off-Off),
+        // The 2-day off blocks are at indices 8-9 and 12-13.
+        // The 3-day off block is at 2-4 (Fri-Sat-Sun).
+        // If today (Jan 16) is a Friday and is OFF, then it must be index 2 (Start of 3-day off) OR index 9.
+        // Wait, user said "today is 2nd day of two consecutive day off".
+        // That implies today is the end of an "Off-Off" block.
+        // Indices 8-9 (Thu-Fri Off)? Or 12-13 (Mon-Tue Off)?
+        // If today is Friday, and it's the 2nd day off, then yesterday (Thu) was off.
+        // That matches indices 8-9 (Thu-Fri Off).
+        // So today is index 9.
+        // Day 0 (Start) would be 9 days ago.
+        const today = new Date();
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - 9); 
+        document.getElementById('startDate').value = startDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+
+        // Helper to check for US Federal Holidays
+        function getUSHoliday(date) {
+            const year = date.getUTCFullYear();
+            const month = date.getUTCMonth(); // 0-11
+            const day = date.getUTCDate(); // 1-31
+            const weekday = date.getUTCDay(); // 0-6 (Sun-Sat)
+
+            // Helper for Nth weekday of month
+            const isNthWeekday = (n, targetWeekday) => {
+                if (weekday !== targetWeekday) return false;
+                // e.g. 1st Monday: day between 1 and 7
+                // 2nd Monday: between 8 and 14
+                const minDay = (n - 1) * 7 + 1;
+                const maxDay = n * 7;
+                return day >= minDay && day <= maxDay;
+            };
+
+            // Memorial day is last Monday of May
+            const isLastMonday = () => {
+                if (weekday !== 1) return false;
+                // If adding 7 days puts us into next month, it's the last one
+                const nextWeek = new Date(date);
+                nextWeek.setUTCDate(day + 7);
+                return nextWeek.getUTCMonth() !== month;
+            };
+
+            // Fixed Date Holidays
+            if (month === 0 && day === 1) return "New Year's Day"; // Jan 1
+            if (month === 5 && day === 19) return "Juneteenth"; // Jun 19
+            if (month === 6 && day === 4) return "Independence Day"; // Jul 4
+            if (month === 10 && day === 11) return "Veterans Day"; // Nov 11
+            if (month === 11 && day === 25) return "Christmas Day"; // Dec 25
+
+            // Floating Holidays
+            if (month === 0 && isNthWeekday(3, 1)) return "Martin Luther King, Jr. Day"; // 3rd Mon Jan
+            if (month === 1 && isNthWeekday(3, 1)) return "Washington's Birthday"; // 3rd Mon Feb
+            if (month === 4 && isLastMonday()) return "Memorial Day"; // Last Mon May
+            if (month === 8 && isNthWeekday(1, 1)) return "Labor Day"; // 1st Mon Sep
+            if (month === 9 && isNthWeekday(2, 1)) return "Columbus Day"; // 2nd Mon Oct
+            if (month === 10 && isNthWeekday(4, 4)) return "Thanksgiving Day"; // 4th Thu Nov
+
+            return null;
+        }
+
+        document.getElementById('dayOffForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const checkDateStr = document.getElementById('checkDate').value;
+            const startDateStr = document.getElementById('startDate').value;
+            
+            const checkDate = new Date(checkDateStr);
+            const startDate = new Date(startDateStr);
+            
+            // Calculate difference in days
+            // Use UTC to avoid DST issues
+            const diffTime = checkDate - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+            
+            // Cycle length is 14 days (2 weeks)
+            // Pattern derived from: "2 Work -> 3 Off (Weekend) -> 3 Work -> 2 Off"
+            // The full 14-day recurring pattern that fits this and the weekend rule is:
+            // Work(2) -> Off(3) -> Work(3) -> Off(2) -> Work(2) -> Off(2)
+            // 0,1: Work
+            // 2,3,4: Off (Long Weekend)
+            // 5,6,7: Work
+            // 8,9: Off
+            // 10,11: Work
+            // 12,13: Off
+            
+            // Handle negative differences
+            const dayInCycle = ((diffDays % 14) + 14) % 14;
+
+            const cyclePattern = [
+                true, true,   // Days 0-1: Work (2)
+                false, false, false, // Days 2-4: Off (3)
+                true, true, true,  // Days 5-7: Work (3)
+                false, false, // Days 8-9: Off (2)
+                true, true,   // Days 10-11: Work (2)
+                false, false  // Days 12-13: Off (2)
+            ];
+
+            let isCycleWorkDay = cyclePattern[dayInCycle];
+            
+            let isHoliday = document.getElementById('isHoliday').checked;
+            const isOnLeave = document.getElementById('isOnLeave').checked;
+            
+            // Auto-detect US Holiday
+            const detectedHoliday = getUSHoliday(checkDate);
+            if (detectedHoliday) {
+                isHoliday = true; // Override or confirm holiday status
+            }
+
+            const resultBox = document.getElementById('resultBox');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            // Calculate Day Names
+            const usDayName = checkDate.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' });
+            
+            // Calculate Next 3-Day Off Period (Offsets 2, 3, 4 in 14-day cycle)
+            // Logic: Find days until next Offset 2.
+            let daysToNextLongOff = (2 - dayInCycle);
+            if (daysToNextLongOff < 0) daysToNextLongOff += 14;
+            
+            const nextLongOffStart = new Date(checkDate);
+            nextLongOffStart.setUTCDate(checkDate.getUTCDate() + daysToNextLongOff);
+            
+            const nextLongOffEnd = new Date(nextLongOffStart);
+            nextLongOffEnd.setUTCDate(nextLongOffStart.getUTCDate() + 2); // 2 days after start = 3 days total
+
+            // PH Dates (+1 day)
+            const phNextLongOffStart = new Date(nextLongOffStart);
+            phNextLongOffStart.setUTCDate(phNextLongOffStart.getUTCDate() + 1);
+
+            const phNextLongOffEnd = new Date(nextLongOffEnd);
+            phNextLongOffEnd.setUTCDate(phNextLongOffEnd.getUTCDate() + 1);
+            
+            const fmtOpts = { month: 'short', day: 'numeric', weekday: 'short', timeZone: 'UTC' };
+            const longOffStrUS = `${nextLongOffStart.toLocaleDateString('en-US', fmtOpts)} - ${nextLongOffEnd.toLocaleDateString('en-US', fmtOpts)}`;
+            const longOffStrPH = `${phNextLongOffStart.toLocaleDateString('en-US', fmtOpts)} - ${phNextLongOffEnd.toLocaleDateString('en-US', fmtOpts)}`;
+            
+            // PH is +1 day ahead for the corresponding shift/day context
+            const phDate = new Date(checkDate);
+            phDate.setUTCDate(phDate.getUTCDate() + 1);
+            const phDayName = phDate.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' });
+
+            // Determine position in cycle
+            let cycleStatusStr = "";
+            switch(dayInCycle) {
+                // Work (2)
+                case 0: cycleStatusStr = "1st day of 2 work days"; break;
+                case 1: cycleStatusStr = "2nd and last day of 2 work days"; break;
+                // Off (3)
+                case 2: cycleStatusStr = "1st day of 3 days off"; break;
+                case 3: cycleStatusStr = "2nd day of 3 days off"; break;
+                case 4: cycleStatusStr = "3rd and last day of 3 days off"; break;
+                // Work (3)
+                case 5: cycleStatusStr = "1st day of 3 work days"; break;
+                case 6: cycleStatusStr = "2nd day of 3 work days"; break;
+                case 7: cycleStatusStr = "3rd and last day of 3 work days"; break;
+                // Off (2)
+                case 8: cycleStatusStr = "1st day of 2 days off"; break;
+                case 9: cycleStatusStr = "2nd and last day of 2 days off"; break;
+                // Work (2)
+                case 10: cycleStatusStr = "1st day of 2 work days"; break;
+                case 11: cycleStatusStr = "2nd and last day of 2 work days"; break;
+                // Off (2)
+                case 12: cycleStatusStr = "1st day of 2 days off"; break;
+                case 13: cycleStatusStr = "2nd and last day of 2 days off"; break;
+            }
+
+            const dayDisplay = `<br><span style="display: inline-block; margin-top: 8px; font-weight: 600; color: #4169E1;">${cycleStatusStr}</span>
+            <br><span style="display: inline-block; margin-top: 4px; font-size: 0.9em; opacity: 0.8;">(🇺🇸 US: ${usDayName} | 🇵🇭 PH: ${phDayName})</span>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); font-size: 0.9em; color: #555;">
+                <strong>📅 Next 3-Day Weekend:</strong><br>
+                🇺🇸 US: ${longOffStrUS}<br>
+                🇵🇭 PH: ${longOffStrPH}
+            </div>`;
+
+            let isDayOff = false;
+            let reason = "";
+
+            if (isHoliday) {
+                isDayOff = true;
+                reason = detectedHoliday ? `It's ${detectedHoliday}!` : "It's a Public Holiday!";
+            } else if (isOnLeave) {
+                isDayOff = true;
+                reason = "Leave is approved!";
+            } else if (!isCycleWorkDay) {
+                isDayOff = true;
+                reason = "It's a scheduled rest day in your 14-day cycle!";
+            } else {
+                isDayOff = false;
+                reason = "It's a scheduled work day in your 14-day cycle.";
+            }
+
+            resultBox.style.display = 'block';
+            resultBox.className = 'result-box ' + (isDayOff ? 'day-off' : 'working');
+            
+            if (isDayOff) {
+                resultIcon.innerHTML = '<i class="fas fa-umbrella-beach"></i>';
+                resultTitle.textContent = "Yes, it's a Day Off!";
+                resultMessage.innerHTML = reason + " Enjoy your time!" + dayDisplay;
+            } else {
+                resultIcon.innerHTML = '<i class="fas fa-briefcase"></i>';
+                resultTitle.textContent = "It's a Work Day";
+                resultMessage.innerHTML = reason + " time to grind!" + dayDisplay;
+            }
+        });
+    </script>
+</body>
+</html>
