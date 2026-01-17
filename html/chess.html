@@ -49,13 +49,102 @@
             background: linear-gradient(135deg, #eaf0fa 0%, #cfd8e3 100%);
             border-radius: 24px;
             box-shadow: 0 8px 32px rgba(65,105,225,0.18);
-            padding: 36px 36px 36px 36px;
+            padding: 36px 16px 36px 16px;
             display: flex;
             flex-direction: row;
-            gap: 32px;
+            gap: 48px;
             justify-content: center;
             align-items: flex-start;
             box-sizing: border-box;
+        }
+        .chess-movelog-panel {
+            margin-left: 0;
+            margin-right: 0;
+            background: linear-gradient(135deg, #f8fbff 80%, #eaf0fa 100%);
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #4169e133;
+            padding: 24px 18px 24px 18px;
+            border: 2px solid #b6c7e3;
+            min-width: 180px;
+            max-width: 240px;
+        }
+        #chess-guide-panel {
+            margin-left: 0;
+            margin-right: 0;
+            background: linear-gradient(135deg, #f8fbff 80%, #eaf0fa 100%);
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #4169e133;
+            padding: 24px 18px 24px 18px;
+            border: 2px solid #b6c7e3;
+            min-width: 220px;
+            max-width: 320px;
+        }
+        @media (max-width: 1200px) {
+            .chess-container {
+                gap: 24px;
+            }
+        }
+        @media (max-width: 900px) {
+            .chess-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 18px;
+                padding: 18px 4vw 18px 4vw;
+                max-width: 100vw;
+            }
+            .chess-movelog-panel, #chess-guide-panel {
+                max-width: 98vw;
+                min-width: 0;
+                width: 100%;
+                margin: 0 auto 12px auto;
+            }
+            #chess-board {
+                min-width: 220px !important;
+                min-height: 220px !important;
+                max-width: 98vw !important;
+                max-height: 98vw !important;
+            }
+        }
+        @media (max-width: 900px) {
+            .chess-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 18px;
+                padding: 18px 4vw 18px 4vw;
+                max-width: 100vw;
+            }
+            .chess-movelog-panel, #chess-guide-panel {
+                max-width: 98vw;
+                min-width: 0;
+                width: 100%;
+                margin: 0 auto 12px auto;
+            }
+            #chess-board {
+                min-width: 220px !important;
+                min-height: 220px !important;
+                max-width: 98vw !important;
+                max-height: 98vw !important;
+            }
+        }
+        @media (max-width: 600px) {
+            .chess-container {
+                padding: 8px 2vw 8px 2vw;
+            }
+            #chess-board {
+                min-width: 160px !important;
+                min-height: 160px !important;
+                max-width: 98vw !important;
+                max-height: 98vw !important;
+            }
+            .chess-movelog-panel, #chess-guide-panel {
+                font-size: 0.98em;
+                padding: 8px 6px 8px 6px !important;
+            }
+            .chess-controls button, .chess-controls select {
+                font-size: 0.98em;
+                padding: 8px 12px;
+                min-width: 90px;
+            }
         }
         .chess-board {
             display: grid;
@@ -182,19 +271,74 @@
                 <button onclick="closeStatsModal()" style="font-size:1em; background:#eaf0fa; border:2px solid #b6c7e3; border-radius:10px; padding:10px 22px; cursor:pointer;">Close</button>
             </div>
         </div>
-    <div class="chess-container" style="display: flex; flex-direction: row; gap: 32px; justify-content: center; align-items: flex-start;">
-        <div style="flex: 0 0 auto;">
+
+        <!-- Chess Rules Modal -->
+        <div id="chess-rules-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(44,58,100,0.18); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:#f8fbff; border-radius:18px; box-shadow:0 4px 24px #4169e133; padding:32px 24px; max-width:600px; text-align:left;">
+                <h2 style="color:#4169E1; margin-top:0;">Chess Rules</h2>
+                <div id="chess-rules-content" style="font-size:1.08em; color:#2d3a4a; margin-bottom:18px; max-height:60vh; overflow-y:auto;">
+                    <b>Objective:</b> Checkmate your opponent's king.<br><br>
+                    <b>Pieces & Movements:</b><br>
+                    <ul>
+                        <li><b>King (♔/♚):</b> Moves one square in any direction. Cannot move into check.</li>
+                        <li><b>Queen (♕/♛):</b> Moves any number of squares in any direction.</li>
+                        <li><b>Rook (♖/♜):</b> Moves any number of squares horizontally or vertically.</li>
+                        <li><b>Bishop (♗/♝):</b> Moves any number of squares diagonally.</li>
+                        <li><b>Knight (♘/♞):</b> Moves in an L-shape: two squares in one direction, then one square perpendicular. Can jump over pieces.</li>
+                        <li><b>Pawn (♙/♟):</b> Moves forward one square (or two from its starting position). Captures diagonally. Can promote to another piece upon reaching the last rank.</li>
+                    </ul>
+                    <b>Special Moves:</b><br>
+                    <ul>
+                        <li><b>Castling:</b> King moves two squares towards a rook, and the rook moves to the square next to the king. Conditions: neither piece has moved, squares between are empty, king is not in check or passing through check.</li>
+                        <li><b>En Passant:</b> Pawn can capture an opponent's pawn that has just moved two squares forward from its starting position, as if it had moved only one square.</li>
+                        <li><b>Pawn Promotion:</b> When a pawn reaches the last rank, it is promoted to a queen, rook, bishop, or knight.</li>
+                    </ul>
+                    <b>Game Rules:</b><br>
+                    <ul>
+                        <li><b>Check:</b> The king is under attack. You must move out of check.</li>
+                        <li><b>Checkmate:</b> The king is in check and cannot escape. The game ends.</li>
+                        <li><b>Stalemate:</b> The player has no legal moves and is not in check. The game is a draw.</li>
+                        <li><b>Draws:</b> Can occur by stalemate, insufficient material, threefold repetition, or the fifty-move rule.</li>
+                    </ul>
+                    <b>How to Win:</b><br>
+                    <ul>
+                        <li>Deliver checkmate to your opponent's king.</li>
+                        <li>Force a resignation.</li>
+                    </ul>
+                    <b>Tips:</b><br>
+                    <ul>
+                        <li>Control the center of the board.</li>
+                        <li>Develop your pieces early.</li>
+                        <li>Protect your king (castle early).</li>
+                        <li>Watch for tactics: forks, pins, skewers.</li>
+                    </ul>
+                </div>
+                <button onclick="closeRulesModal()" style="font-size:1em; background:#eaf0fa; border:2px solid #b6c7e3; border-radius:10px; padding:10px 22px; cursor:pointer;">Close</button>
+            </div>
+        </div>
+    <div class="chess-container" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 32px; max-width: 1100px; margin: 48px auto 0 auto; background: linear-gradient(135deg, #eaf0fa 0%, #cfd8e3 100%); border-radius: 24px; box-shadow: 0 8px 32px rgba(65,105,225,0.18); padding: 36px 0 36px 0;">
+        <div id="chess-guide-panel" style="background:#f7faff;border:2px solid #b6c7e3;border-radius:10px;padding:16px;max-width:320px;min-width:220px; margin-right:0; margin-left:18px; align-self:flex-start;">
+            <h3 style="margin-top:0; color:#4169E1; font-size:1.22em; font-weight:700; letter-spacing:0.5px; display:flex; align-items:center; gap:8px;"><i class="fas fa-lightbulb" style="color:#ffd700;"></i> Chess Guide & Hints</h3>
+            <div id="chess-guide-phase" style="font-weight:600; color:#2d3a4a; background:#eaf0fa; border-radius:7px; padding:7px 0 7px 0; margin-bottom:10px; font-size:1.08em; box-shadow:0 1px 4px #4169e111; text-align:center;"></div>
+            <div id="chess-guide-hint" style="color:#333; font-size:1.08em; line-height:1.6; background:#f8fbff; border-radius:7px; box-shadow:0 1px 4px #4169e111; padding:10px 12px; min-height:60px;"></div>
+        </div>
+        <div style="width:100%; max-width:700px; margin:0 18px 0 0; display:flex; flex-direction:column; align-items:center;">
             <h1 style="margin-bottom: 10px; color: #333;"><i class="fas fa-chess"></i> Chess Game</h1>
             <div class="chess-status" id="chess-status">White's turn</div>
-            <div class="chess-board" id="chess-board"></div>
-            <div id="timers-and-countdown" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:18px;">
+            <div style="position:relative; display:block; width:100%; max-width:520px; margin:0 auto;">
+                <div id="captured-white" style="display:flex; justify-content:center; align-items:center; min-height:32px; margin-bottom:6px; font-size:1.5em; color:#4169E1;"></div>
+                <div id="chess-board-coords" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2;"></div>
+                <div class="chess-board" id="chess-board" style="width:100%; height:auto; aspect-ratio:1/1; min-width:320px; min-height:320px; max-width:520px; max-height:520px;"></div>
+                <div id="captured-black" style="display:flex; justify-content:center; align-items:center; min-height:32px; margin-top:6px; font-size:1.5em; color:#d35400;"></div>
+            </div>
+            <div id="timers-and-countdown" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; width:100%;">
                 <div style="display:flex; gap:24px; justify-content:center;">
                     <div id="white-timer" style="font-size:1.08em; color:#2d3a4a; background:#f8fbff; border-radius:8px; box-shadow:0 1px 4px #4169e111; padding:6px 16px;">White: 00:00</div>
                     <div id="black-timer" style="font-size:1.08em; color:#2d3a4a; background:#f8fbff; border-radius:8px; box-shadow:0 1px 4px #4169e111; padding:6px 16px;">Black: 00:00</div>
                 </div>
                 <div id="lone-king-countdown" style="display:none; font-size:1.12em; color:#d35400; font-weight:600; background:#f8fbff; border-radius:8px; box-shadow:0 1px 4px #4169e111; padding:8px 18px; text-align:center;"></div>
             </div>
-            <div class="chess-controls" style="margin-top:24px; display:flex; gap:16px; justify-content:center;">
+            <div class="chess-controls" style="margin-top:24px; display:flex; gap:16px; justify-content:center; width:100%;">
                 <button onclick="resetChess()"><i class="fas fa-undo"></i> Reset</button>
                 <button id="toggle-computer" onclick="toggleComputer()"><i class="fas fa-robot"></i> Play vs Computer</button>
                 <select id="computer-difficulty" style="padding:7px 12px; border-radius:7px; border:1px solid #4169E1; font-size:1em;">
@@ -202,20 +346,23 @@
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                 </select>
+                <button onclick="openRulesModal()" style="font-size:1em; background:linear-gradient(90deg, #4169E1 60%, #764ba2 100%); color:white; border:none; border-radius:12px; padding:13px 28px; font-weight:600; letter-spacing:0.5px; cursor:pointer;"><i class="fas fa-book"></i> Chess Rules</button>
             </div>
         </div>
-        <div id="promotion-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(44,58,100,0.18); z-index:9999; align-items:center; justify-content:center;">
-            <div style="background:#f8fbff; border-radius:18px; box-shadow:0 4px 24px #4169e133; padding:32px 24px; text-align:center; min-width:260px;">
-                <div style="font-size:1.18em; font-weight:600; color:#2d3a4a; margin-bottom:18px;">Promote Pawn To:</div>
-                <div id="promotion-choices" style="display:flex; gap:18px; justify-content:center;"></div>
+        <div class="chess-movelog-panel" style="align-self:flex-start; min-width:170px; max-width:220px; margin-left:18px; margin-right:0;">
+            <div class="chess-movelog-title" style="color:#4169E1; font-size:1.13em; font-weight:700; letter-spacing:0.5px; display:flex; align-items:center; gap:7px; margin-bottom:12px;">
+                <i class="fas fa-list-ol"></i> Move Log
             </div>
-        </div>
-        <div class="chess-movelog-panel">
-            <div class="chess-movelog-title"><i class="fas fa-list-ol"></i> Move Log</div>
-            <ol id="chess-movelog" class="chess-movelog-list"></ol>
+            <ol id="chess-movelog" class="chess-movelog-list" style="font-size:1.08em; color:#2d3a4a; background:#f8fbff; border-radius:8px; box-shadow:0 1px 4px #4169e111; padding-left:20px; margin:0; min-height:320px; max-height:420px; overflow-y:auto;"></ol>
         </div>
     </div>
     <script>
+                                                    function openRulesModal() {
+                                                        document.getElementById('chess-rules-modal').style.display = 'flex';
+                                                    }
+                                                    function closeRulesModal() {
+                                                        document.getElementById('chess-rules-modal').style.display = 'none';
+                                                    }
                                             let whiteTime = 0, blackTime = 0;
                                             let timerInterval = null;
                                             function formatTime(sec) {
@@ -380,6 +527,31 @@
                                     }
                                 }
                             }
+                            // Add castling moves for white
+                            if (isWhite) {
+                                if (typeof whiteCanCastleKing !== 'undefined' && whiteCanCastleKing && board[7][4] === 'K' && board[7][7] === 'R' && board[7][5] === '' && board[7][6] === '') {
+                                    if (!isKingInCheck(board, true) && !isSquareAttacked(7, 5, true) && !isSquareAttacked(7, 6, true)) {
+                                        moves.push({fromRow:7,fromCol:4,toRow:7,toCol:6,castling:true,type:'O-O'});
+                                    }
+                                }
+                                if (typeof whiteCanCastleQueen !== 'undefined' && whiteCanCastleQueen && board[7][4] === 'K' && board[7][0] === 'R' && board[7][3] === '' && board[7][2] === '' && board[7][1] === '') {
+                                    if (!isKingInCheck(board, true) && !isSquareAttacked(7, 3, true) && !isSquareAttacked(7, 2, true)) {
+                                        moves.push({fromRow:7,fromCol:4,toRow:7,toCol:2,castling:true,type:'O-O-O'});
+                                    }
+                                }
+                            } else {
+                                // Add castling moves for black
+                                if (typeof blackCanCastleKing !== 'undefined' && blackCanCastleKing && board[0][4] === 'k' && board[0][7] === 'r' && board[0][5] === '' && board[0][6] === '') {
+                                    if (!isKingInCheck(board, false) && !isSquareAttacked(0, 5, false) && !isSquareAttacked(0, 6, false)) {
+                                        moves.push({fromRow:0,fromCol:4,toRow:0,toCol:6,castling:true,type:'O-O'});
+                                    }
+                                }
+                                if (typeof blackCanCastleQueen !== 'undefined' && blackCanCastleQueen && board[0][4] === 'k' && board[0][0] === 'r' && board[0][3] === '' && board[0][2] === '' && board[0][1] === '') {
+                                    if (!isKingInCheck(board, false) && !isSquareAttacked(0, 3, false) && !isSquareAttacked(0, 2, false)) {
+                                        moves.push({fromRow:0,fromCol:4,toRow:0,toCol:2,castling:true,type:'O-O-O'});
+                                    }
+                                }
+                            }
                             return moves;
                         }
 
@@ -407,16 +579,22 @@
                             }
                         }
                 let gameOver = false;
-            let playVsComputer = false;
-            let computerDifficulty = 'easy';
+            let playVsComputer = true;
+            let computerDifficulty = 'hard';
                         // Listen for difficulty change
                         document.addEventListener('DOMContentLoaded', function() {
                             const diffSel = document.getElementById('computer-difficulty');
                             if (diffSel) {
+                                diffSel.value = 'hard';
                                 diffSel.addEventListener('change', function() {
                                     computerDifficulty = this.value;
                                 });
                                 computerDifficulty = diffSel.value;
+                            }
+                            // Set Play vs Computer button to correct state
+                            const btn = document.getElementById('toggle-computer');
+                            if (btn) {
+                                btn.innerHTML = '<i class="fas fa-user"></i> Play 2 Players';
                             }
                         });
                 function toggleComputer() {
@@ -448,6 +626,10 @@
         let statusDiv = document.getElementById('chess-status');
         const boardDiv = document.getElementById('chess-board');
         const moveLogOl = document.getElementById('chess-movelog');
+
+        // Track castling rights
+        let whiteCanCastleKing = true, whiteCanCastleQueen = true;
+        let blackCanCastleKing = true, blackCanCastleQueen = true;
 
         let promotionCallback = null;
         function showPromotionModal(isWhite, callback) {
@@ -502,6 +684,76 @@
                     cell.onclick = () => onCellClick(row, col);
                     boardDiv.appendChild(cell);
                 }
+            }
+            // Render board coordinates
+            const coordsDiv = document.getElementById('chess-board-coords');
+            if (coordsDiv) {
+                coordsDiv.innerHTML = '';
+                const files = 'abcdefgh';
+                // Column letters (bottom)
+                for (let col = 0; col < 8; col++) {
+                    const label = document.createElement('div');
+                    label.textContent = files[col];
+                    label.style.position = 'absolute';
+                    label.style.left = (col * 12.5) + '%';
+                    label.style.bottom = '-22px';
+                    label.style.width = '12.5%';
+                    label.style.textAlign = 'center';
+                    label.style.fontWeight = 'bold';
+                    label.style.color = '#4169E1';
+                    label.style.fontSize = '1.08em';
+                    coordsDiv.appendChild(label);
+                }
+                // Row numbers (left)
+                for (let row = 0; row < 8; row++) {
+                    const label = document.createElement('div');
+                    label.textContent = 8 - row;
+                    label.style.position = 'absolute';
+                    label.style.top = (row * 12.5) + '%';
+                    label.style.left = '-22px';
+                    label.style.height = '12.5%';
+                    label.style.textAlign = 'center';
+                    label.style.fontWeight = 'bold';
+                    label.style.color = '#4169E1';
+                    label.style.fontSize = '1.08em';
+                    coordsDiv.appendChild(label);
+                }
+            }
+            // Render captured pieces
+            function getCapturedPieces(isWhite) {
+                const initial = isWhite
+                    ? ['R','N','B','Q','K','B','N','R','P','P','P','P','P','P','P','P']
+                    : ['r','n','b','q','k','b','n','r','p','p','p','p','p','p','p','p'];
+                const current = [];
+                for (let row = 0; row < 8; row++) {
+                    for (let col = 0; col < 8; col++) {
+                        const p = board[row][col];
+                        if (p && ((isWhite && p === p.toUpperCase()) || (!isWhite && p === p.toLowerCase()))) {
+                            current.push(p);
+                        }
+                    }
+                }
+                // Count missing pieces
+                const captured = [];
+                initial.forEach(piece => {
+                    const idx = current.indexOf(piece);
+                    if (idx !== -1) {
+                        current.splice(idx,1);
+                    } else {
+                        captured.push(piece);
+                    }
+                });
+                return captured;
+            }
+            const capturedWhiteDiv = document.getElementById('captured-white');
+            const capturedBlackDiv = document.getElementById('captured-black');
+            if (capturedWhiteDiv) {
+                const captured = getCapturedPieces(false); // Show black pieces captured by white
+                capturedWhiteDiv.innerHTML = captured.map(p => `<span>${PIECES[p]}</span>`).join(' ');
+            }
+            if (capturedBlackDiv) {
+                const captured = getCapturedPieces(true); // Show white pieces captured by black
+                capturedBlackDiv.innerHTML = captured.map(p => `<span>${PIECES[p]}</span>`).join(' ');
             }
             renderMoveLog();
         }
@@ -576,6 +828,81 @@
             const piece = board[row][col];
             if (selected) {
                 // Try to move
+                // Castling logic
+                let isCastlingMove = false;
+                let castlingType = '';
+                if (piece && board[selected[0]][selected[1]] && board[selected[0]][selected[1]].toLowerCase() === 'k') {
+                    // White castling
+                    if (whiteTurn && selected[0] === 7 && selected[1] === 4 && row === 7 && (col === 6 || col === 2)) {
+                        if (col === 6 && whiteCanCastleKing && board[7][5] === '' && board[7][6] === '' && board[7][7] === 'R') {
+                            // Check squares not attacked
+                            if (!isKingInCheck(board, true) && !isSquareAttacked(7, 5, true) && !isSquareAttacked(7, 6, true)) {
+                                isCastlingMove = true;
+                                castlingType = 'O-O';
+                            }
+                        } else if (col === 2 && whiteCanCastleQueen && board[7][3] === '' && board[7][2] === '' && board[7][1] === '' && board[7][0] === 'R') {
+                            if (!isKingInCheck(board, true) && !isSquareAttacked(7, 3, true) && !isSquareAttacked(7, 2, true)) {
+                                isCastlingMove = true;
+                                castlingType = 'O-O-O';
+                            }
+                        }
+                    }
+                    // Black castling
+                    if (!whiteTurn && selected[0] === 0 && selected[1] === 4 && row === 0 && (col === 6 || col === 2)) {
+                        if (col === 6 && blackCanCastleKing && board[0][5] === '' && board[0][6] === '' && board[0][7] === 'r') {
+                            if (!isKingInCheck(board, false) && !isSquareAttacked(0, 5, false) && !isSquareAttacked(0, 6, false)) {
+                                isCastlingMove = true;
+                                castlingType = 'O-O';
+                            }
+                        } else if (col === 2 && blackCanCastleQueen && board[0][3] === '' && board[0][2] === '' && board[0][1] === '' && board[0][0] === 'r') {
+                            if (!isKingInCheck(board, false) && !isSquareAttacked(0, 3, false) && !isSquareAttacked(0, 2, false)) {
+                                isCastlingMove = true;
+                                castlingType = 'O-O-O';
+                            }
+                        }
+                    }
+                }
+                if (isCastlingMove) {
+                    // Move king and rook
+                    if (whiteTurn) {
+                        if (castlingType === 'O-O') {
+                                board[7][6] = 'K'; // King to g1
+                                board[7][4] = '';
+                                board[7][5] = 'R'; // Rook to f1
+                                board[7][7] = '';
+                        } else {
+                                board[7][2] = 'K'; // King to c1
+                                board[7][4] = '';
+                                board[7][3] = 'R'; // Rook to d1
+                                board[7][0] = '';
+                        }
+                        whiteCanCastleKing = false;
+                        whiteCanCastleQueen = false;
+                    } else {
+                        if (castlingType === 'O-O') {
+                                board[0][6] = 'k'; // King to g8
+                                board[0][4] = '';
+                                board[0][5] = 'r'; // Rook to f8
+                                board[0][7] = '';
+                        } else {
+                                board[0][2] = 'k'; // King to c8
+                                board[0][4] = '';
+                                board[0][3] = 'r'; // Rook to d8
+                                board[0][0] = '';
+                        }
+                        blackCanCastleKing = false;
+                        blackCanCastleQueen = false;
+                    }
+                    moveLog.push(castlingType);
+                    selected = null;
+                    whiteTurn = !whiteTurn;
+                    renderBoard();
+                    checkGameStatus();
+                    if (playVsComputer && !whiteTurn && !gameOver) {
+                        setTimeout(computerMove, 400);
+                    }
+                    return;
+                }
                 if (isValidMove(selected[0], selected[1], row, col)) {
                     // Simulate move to check legality
                     let testBoard = cloneBoard(board);
@@ -617,6 +944,21 @@
                         moveLog.push(moveNotation);
                         board[row][col] = board[selected[0]][selected[1]];
                         board[selected[0]][selected[1]] = '';
+                        // Disable castling rights if king or rook moves
+                        if (board[row][col] === 'K') {
+                            whiteCanCastleKing = false;
+                            whiteCanCastleQueen = false;
+                        }
+                        if (board[row][col] === 'k') {
+                            blackCanCastleKing = false;
+                            blackCanCastleQueen = false;
+                        }
+                        // White rooks
+                        if (selected[0] === 7 && selected[1] === 0 && board[row][col] === 'R') whiteCanCastleQueen = false;
+                        if (selected[0] === 7 && selected[1] === 7 && board[row][col] === 'R') whiteCanCastleKing = false;
+                        // Black rooks
+                        if (selected[0] === 0 && selected[1] === 0 && board[row][col] === 'r') blackCanCastleQueen = false;
+                        if (selected[0] === 0 && selected[1] === 7 && board[row][col] === 'r') blackCanCastleKing = false;
                         selected = null;
                         whiteTurn = !whiteTurn;
                         renderBoard();
@@ -641,89 +983,209 @@
             if (gameOver) return;
             // Get all legal moves for black
             let moves = getLegalMoves(board, false);
+            // Add castling moves for black if available
+            if (blackCanCastleKing && board[0][4] === 'k' && board[0][7] === 'r' && board[0][5] === '' && board[0][6] === '') {
+                if (!isKingInCheck(board, false) && !isSquareAttacked(0, 5, false) && !isSquareAttacked(0, 6, false)) {
+                    moves.push({fromRow:0,fromCol:4,toRow:0,toCol:6,castling:true,type:'O-O'});
+                }
+            }
+            if (blackCanCastleQueen && board[0][4] === 'k' && board[0][0] === 'r' && board[0][3] === '' && board[0][2] === '' && board[0][1] === '') {
+                if (!isKingInCheck(board, false) && !isSquareAttacked(0, 3, false) && !isSquareAttacked(0, 2, false)) {
+                    moves.push({fromRow:0,fromCol:4,toRow:0,toCol:2,castling:true,type:'O-O-O'});
+                }
+            }
+
+            // If computer plays white, add castling moves for white
+            if (!whiteTurn) {
+                if (whiteCanCastleKing && board[7][4] === 'K' && board[7][7] === 'R' && board[7][5] === '' && board[7][6] === '') {
+                    if (!isKingInCheck(board, true) && !isSquareAttacked(7, 5, true) && !isSquareAttacked(7, 6, true)) {
+                        moves.push({fromRow:7,fromCol:4,toRow:7,toCol:6,castling:true,type:'O-O'});
+                    }
+                }
+                if (whiteCanCastleQueen && board[7][4] === 'K' && board[7][0] === 'R' && board[7][3] === '' && board[7][2] === '' && board[7][1] === '') {
+                    if (!isKingInCheck(board, true) && !isSquareAttacked(7, 3, true) && !isSquareAttacked(7, 2, true)) {
+                        moves.push({fromRow:7,fromCol:4,toRow:7,toCol:2,castling:true,type:'O-O-O'});
+                    }
+                }
+            }
             if (moves.length === 0) {
                 checkGameStatus();
                 return;
             }
-            // Difficulty logic
-            let move;
-            if (computerDifficulty === 'easy') {
-                move = moves[Math.floor(Math.random() * moves.length)];
-            } else if (computerDifficulty === 'medium') {
-                // Prefer captures
-                const captures = moves.filter(m => board[m.toRow][m.toCol]);
-                if (captures.length > 0) move = captures[Math.floor(Math.random() * captures.length)];
-                else move = moves[Math.floor(Math.random() * moves.length)];
-            } else if (computerDifficulty === 'hard') {
-                // Minimax search, depth 2 (computer and player reply)
-                function getPieceValue(piece) {
-                    switch (piece.toLowerCase()) {
-                        case 'p': return 1;
-                        case 'n': case 'b': return 3;
-                        case 'r': return 5;
-                        case 'q': return 9;
-                        case 'k': return 0;
-                        default: return 0;
-                    }
+            // Convert moveLog to simple move notation (e.g., "e2e4")
+            let moveHistory = moveLog.map(m => {
+                let raw = m.replace(/[^a-h1-8x\-]/g, '');
+                if (raw.includes('x')) raw = raw.replace('x', '');
+                if (raw.includes('-')) raw = raw.replace('-', '');
+                return raw;
+            });
+            // Try grandmaster games database first
+            let move = null;
+            if (typeof getGrandmasterMove === 'function') {
+                let gmMove = getGrandmasterMove(moveHistory);
+                if (gmMove) {
+                    move = moves.find(m => {
+                        const files = 'abcdefgh';
+                        const ranks = '87654321';
+                        let notation = files[m.fromCol] + ranks[m.fromRow] + files[m.toCol] + ranks[m.toRow];
+                        return notation === gmMove;
+                    });
                 }
-                function evaluateBoard(bd) {
-                    let score = 0;
-                    for (let r = 0; r < 8; r++) {
-                        for (let c = 0; c < 8; c++) {
-                            const p = bd[r][c];
-                            if (p) {
-                                if (p === p.toLowerCase()) score += getPieceValue(p);
-                                else score -= getPieceValue(p);
-                            }
+            }
+            // If no grandmaster move, try opening book
+            if (!move && typeof getOpeningBookMove === 'function') {
+                let bookMove = getOpeningBookMove(moveHistory);
+                if (bookMove) {
+                    move = moves.find(m => {
+                        const files = 'abcdefgh';
+                        const ranks = '87654321';
+                        let notation = files[m.fromCol] + ranks[m.fromRow] + files[m.toCol] + ranks[m.toRow];
+                        return notation === bookMove;
+                    });
+                }
+            }
+            // If no book or grandmaster move, use Stockfish for hard mode
+            if (!move && computerDifficulty === 'hard' && window.Stockfish) {
+                // Stockfish integration (pseudo-code, needs real FEN and async handling)
+                // let engine = window.Stockfish();
+                // engine.postMessage('position fen ' + getCurrentFEN());
+                // engine.postMessage('go depth 12');
+                // engine.onmessage = function(event) {
+                //   if (event.data.startsWith('bestmove')) {
+                //     let best = event.data.split(' ')[1];
+                //     // Convert bestmove to move object and assign to move
+                //   }
+                // };
+                // For now, fallback to minimax
+                move = null;
+            }
+            // If still no move, fallback to minimax or random
+            if (!move) {
+                if (computerDifficulty === 'easy') {
+                    move = moves[Math.floor(Math.random() * moves.length)];
+                } else if (computerDifficulty === 'medium') {
+                    const captures = moves.filter(m => board[m.toRow][m.toCol]);
+                    if (captures.length > 0) move = captures[Math.floor(Math.random() * captures.length)];
+                    else move = moves[Math.floor(Math.random() * moves.length)];
+                } else {
+                    // Minimax search, depth 2 (existing logic)
+                    function getPieceValue(piece) {
+                        switch (piece.toLowerCase()) {
+                            case 'p': return 1;
+                            case 'n': case 'b': return 3;
+                            case 'r': return 5;
+                            case 'q': return 9;
+                            case 'k': return 0;
+                            default: return 0;
                         }
                     }
-                    // Bonus for check
-                    if (isKingInCheck(bd, true)) score += 0.5;
-                    return score;
+                    function evaluateBoard(bd) {
+                        let score = 0;
+                        for (let r = 0; r < 8; r++) {
+                            for (let c = 0; c < 8; c++) {
+                                const p = bd[r][c];
+                                if (p) {
+                                    if (p === p.toLowerCase()) score += getPieceValue(p);
+                                    else score -= getPieceValue(p);
+                                }
+                            }
+                        }
+                        if (isKingInCheck(bd, true)) score += 0.5;
+                        return score;
+                    }
+                    let bestScore = -Infinity;
+                    let bestMoves = [];
+                    moves.forEach(m => {
+                        let testBoard = cloneBoard(board);
+                        testBoard[m.toRow][m.toCol] = testBoard[m.fromRow][m.fromCol];
+                        testBoard[m.fromRow][m.fromCol] = '';
+                        let playerMoves = getLegalMoves(testBoard, true);
+                        let worstReply = Infinity;
+                        if (playerMoves.length > 0) {
+                            playerMoves.forEach(pm => {
+                                let replyBoard = cloneBoard(testBoard);
+                                replyBoard[pm.toRow][pm.toCol] = replyBoard[pm.fromRow][pm.fromCol];
+                                replyBoard[pm.fromRow][pm.fromCol] = '';
+                                let replyScore = evaluateBoard(replyBoard);
+                                if (replyScore < worstReply) worstReply = replyScore;
+                            });
+                        } else {
+                            worstReply = evaluateBoard(testBoard);
+                        }
+                        if (worstReply > bestScore) {
+                            bestScore = worstReply;
+                            bestMoves = [m];
+                        } else if (worstReply === bestScore) {
+                            bestMoves.push(m);
+                        }
+                    });
+                    move = bestMoves[Math.floor(Math.random() * bestMoves.length)];
                 }
-                let bestScore = -Infinity;
-                let bestMoves = [];
-                moves.forEach(m => {
-                    let testBoard = cloneBoard(board);
-                    testBoard[m.toRow][m.toCol] = testBoard[m.fromRow][m.fromCol];
-                    testBoard[m.fromRow][m.fromCol] = '';
-                    // Simulate player's best reply
-                    let playerMoves = getLegalMoves(testBoard, true);
-                    let worstReply = Infinity;
-                    if (playerMoves.length > 0) {
-                        playerMoves.forEach(pm => {
-                            let replyBoard = cloneBoard(testBoard);
-                            replyBoard[pm.toRow][pm.toCol] = replyBoard[pm.fromRow][pm.fromCol];
-                            replyBoard[pm.fromRow][pm.fromCol] = '';
-                            let replyScore = evaluateBoard(replyBoard);
-                            if (replyScore < worstReply) worstReply = replyScore;
-                        });
-                    } else {
-                        worstReply = evaluateBoard(testBoard);
-                    }
-                    if (worstReply > bestScore) {
-                        bestScore = worstReply;
-                        bestMoves = [m];
-                    } else if (worstReply === bestScore) {
-                        bestMoves.push(m);
-                    }
-                });
-                move = bestMoves[Math.floor(Math.random() * bestMoves.length)];
-            } else {
-                move = moves[Math.floor(Math.random() * moves.length)];
             }
             // Animate computer move
-            const fromCell = boardDiv.children[move.fromRow*8 + move.fromCol];
-            if (fromCell) fromCell.classList.add('moving');
-            setTimeout(() => {
-                const moveNotation = getMoveNotation(move.fromRow, move.fromCol, move.toRow, move.toCol, board[move.fromRow][move.fromCol], board[move.toRow][move.toCol]);
-                moveLog.push(moveNotation);
-                board[move.toRow][move.toCol] = board[move.fromRow][move.fromCol];
-                board[move.fromRow][move.fromCol] = '';
-                whiteTurn = !whiteTurn;
-                renderBoard();
-                checkGameStatus();
-            }, 300);
+            if (move) {
+                const fromCell = boardDiv.children[move.fromRow*8 + move.fromCol];
+                if (fromCell) fromCell.classList.add('moving');
+                setTimeout(() => {
+                    if (move.castling) {
+                        if (move.type === 'O-O') {
+                            if (move.fromRow === 0) {
+                                board[0][6] = 'k'; // King to g8
+                                board[0][4] = '';
+                                board[0][7] = '';
+                                board[0][5] = 'r'; // Rook to f8
+                                blackCanCastleKing = false;
+                                blackCanCastleQueen = false;
+                            } else {
+                                board[7][6] = 'K'; // King to g1
+                                board[7][4] = '';
+                                board[7][7] = '';
+                                board[7][5] = 'R'; // Rook to f1
+                                whiteCanCastleKing = false;
+                                whiteCanCastleQueen = false;
+                            }
+                        } else {
+                            if (move.fromRow === 0) {
+                                board[0][2] = 'k'; // King to c8
+                                board[0][4] = '';
+                                board[0][0] = '';
+                                board[0][3] = 'r'; // Rook to d8
+                                blackCanCastleKing = false;
+                                blackCanCastleQueen = false;
+                            } else {
+                                board[7][2] = 'K'; // King to c1
+                                board[7][4] = '';
+                                board[7][0] = '';
+                                board[7][3] = 'R'; // Rook to d1
+                                whiteCanCastleKing = false;
+                                whiteCanCastleQueen = false;
+                            }
+                        }
+                        moveLog.push(move.type);
+                    } else {
+                        const moveNotation = getMoveNotation(move.fromRow, move.fromCol, move.toRow, move.toCol, board[move.fromRow][move.fromCol], board[move.toRow][move.toCol]);
+                        moveLog.push(moveNotation);
+                        board[move.toRow][move.toCol] = board[move.fromRow][move.fromCol];
+                        board[move.fromRow][move.fromCol] = '';
+                        // Disable castling rights if king or rook moves
+                        if (board[move.toRow][move.toCol] === 'k') {
+                            blackCanCastleKing = false;
+                            blackCanCastleQueen = false;
+                        }
+                        if (board[move.toRow][move.toCol] === 'K') {
+                            whiteCanCastleKing = false;
+                            whiteCanCastleQueen = false;
+                        }
+                        if (move.fromRow === 0 && move.fromCol === 0 && board[move.toRow][move.toCol] === 'r') blackCanCastleQueen = false;
+                        if (move.fromRow === 0 && move.fromCol === 7 && board[move.toRow][move.toCol] === 'r') blackCanCastleKing = false;
+                        if (move.fromRow === 7 && move.fromCol === 0 && board[move.toRow][move.toCol] === 'R') whiteCanCastleQueen = false;
+                        if (move.fromRow === 7 && move.fromCol === 7 && board[move.toRow][move.toCol] === 'R') whiteCanCastleKing = false;
+                    }
+                    whiteTurn = !whiteTurn;
+                    renderBoard();
+                    checkGameStatus();
+                }, 300);
+            }
         }
 
         // Simple algebraic notation for move log
@@ -743,7 +1205,45 @@
             moveLogOl.innerHTML = '';
             moveLog.forEach((move, idx) => {
                 const li = document.createElement('li');
-                li.textContent = move;
+                // Show castling moves as O-O or O-O-O
+                if (move === 'O-O' || move === 'O-O-O') {
+                    li.textContent = move;
+                } else {
+                    li.textContent = move;
+                }
+                // Add caption/technical name for the move
+                let caption = '';
+                // Check grandmaster games
+                if (typeof GRANDMASTER_GAMES !== 'undefined') {
+                    let history = moveLog.slice(0, idx + 1).map(m => {
+                        let raw = m.replace(/[^a-h1-8x\-]/g, '');
+                        if (raw.includes('x')) raw = raw.replace('x', '');
+                        if (raw.includes('-')) raw = raw.replace('-', '');
+                        return raw;
+                    });
+                    for (const entry of GRANDMASTER_GAMES) {
+                        if (JSON.stringify(entry.moves) === JSON.stringify(history)) {
+                            caption = ' (' + (entry.name || 'Grandmaster Line') + ')';
+                            break;
+                        }
+                    }
+                }
+                // Check opening book
+                if (!caption && typeof OPENING_BOOK !== 'undefined') {
+                    let history = moveLog.slice(0, idx + 1).map(m => {
+                        let raw = m.replace(/[^a-h1-8x\-]/g, '');
+                        if (raw.includes('x')) raw = raw.replace('x', '');
+                        if (raw.includes('-')) raw = raw.replace('-', '');
+                        return raw;
+                    });
+                    for (const entry of OPENING_BOOK) {
+                        if (JSON.stringify(entry.moves) === JSON.stringify(history)) {
+                            caption = ' (' + (entry.name || 'Opening Book') + ')';
+                            break;
+                        }
+                    }
+                }
+                li.innerHTML += caption;
                 moveLogOl.appendChild(li);
             });
             // Scroll to latest move
@@ -833,7 +1333,21 @@
                     return false;
                 }
                 case 'k': { // King
+                    // Castling handled in onCellClick
                     return absDr <= 1 && absDc <= 1;
+                }
+            }
+            return false;
+        }
+
+        // Helper: is square attacked
+        function isSquareAttacked(row, col, isWhite) {
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const p = board[r][c];
+                    if (p && ((isWhite && p === p.toLowerCase()) || (!isWhite && p === p.toUpperCase()))) {
+                        if (isValidMoveCustom(board, r, c, row, col)) return true;
+                    }
                 }
             }
             return false;
@@ -854,10 +1368,93 @@
             whiteTurn = true;
             moveLog = [];
             gameOver = false;
+            whiteTime = 0;
+            blackTime = 0;
+            stopTimer();
+            updateTimers();
             statusDiv.textContent = "White's turn";
             renderBoard();
             checkGameStatus();
+            startTimer();
+            whiteCanCastleKing = true; whiteCanCastleQueen = true;
+            blackCanCastleKing = true; blackCanCastleQueen = true;
         }
+
+        function updateGuidePanel() {
+            let phase = '';
+            let hint = '';
+            // Determine phase by move count
+            if (moveLog.length < 10) {
+                phase = 'Opening';
+                hint = `<b>Goals:</b><br>
+                - Control the center squares (e4, d4, e5, d5).<br>
+                - Develop knights and bishops before moving the queen.<br>
+                - Castle early for king safety.<br>
+                - Avoid moving the same piece multiple times in the opening.<br>
+                - Don’t bring your queen out too early.<br>
+                <br><b>Popular Openings:</b><br>
+                <span style='color:#2a7ae2;'>Ruy Lopez:</span> 1.e4 e5 2.Nf3 Nc6 3.Bb5<br>
+                <span style='color:#2a7ae2;'>Queen's Gambit:</span> 1.d4 d5 2.c4<br>
+                <span style='color:#2a7ae2;'>Italian Game:</span> 1.e4 e5 2.Nf3 Nc6 3.Bc4<br>
+                <br><b>Tips:</b><br>
+                - Develop towards the center, not the edge.<br>
+                - Watch for threats and defend pieces as you develop.<br>
+                - Try to follow a known opening for the first 5-10 moves.`;
+            } else if (moveLog.length < 30) {
+                phase = 'Middlegame';
+                hint = `<b>Goals:</b><br>
+                - Increase piece activity and coordinate attacks.<br>
+                - Look for tactical opportunities: forks, pins, skewers, discovered attacks.<br>
+                - Control open files with rooks and diagonals with bishops.<br>
+                - Connect your rooks and use them together.<br>
+                - Watch for weak squares and pawn structure.<br>
+                <br><b>Typical Plans:</b><br>
+                - Attack the opponent’s king if it’s exposed.<br>
+                - Target isolated or backward pawns.<br>
+                - Trade pieces if you’re ahead in material.<br>
+                <br><b>Tips:</b><br>
+                - Always check for checks, captures, and threats on every move.<br>
+                - Don’t rush; look for the best move, not just a good one.<br>
+                - Use tactics trainers to improve your calculation skills.`;
+            } else {
+                phase = 'Endgame';
+                hint = `<b>Goals:</b><br>
+                - Activate your king; it becomes a strong piece in the endgame.<br>
+                - Push passed pawns and try to promote them.<br>
+                - Use your rook behind passed pawns (the "Lucena position").<br>
+                - Cut off the opponent’s king with your rook.<br>
+                <br><b>Key Endgame Principles:</b><br>
+                - Opposition: Use your king to control key squares.<br>
+                - Don’t rush pawn pushes; calculate carefully.<br>
+                - Trade pieces if you’re ahead, avoid trades if you’re behind.<br>
+                <br><b>Tips:</b><br>
+                - Practice basic mates (king and queen vs king, king and rook vs king).<br>
+                - Know key theoretical positions (Lucena, Philidor, etc).<br>
+                - In pawn endgames, "the king is a fighting piece"—use it!`;
+            }
+            // Suggest next grandmaster move if available
+            if (typeof getGrandmasterMove === 'function') {
+                let moveHistory = moveLog.map(m => {
+                    let raw = m.replace(/[^a-h1-8x\-]/g, '');
+                    if (raw.includes('x')) raw = raw.replace('x', '');
+                    if (raw.includes('-')) raw = raw.replace('-', '');
+                    return raw;
+                });
+                let gmMove = getGrandmasterMove(moveHistory);
+                if (gmMove) {
+                    hint += `<br><b>Suggested Grandmaster Move:</b> <span style='color:#2a7ae2;'>${gmMove}</span>`;
+                }
+            }
+            document.getElementById('chess-guide-phase').textContent = 'Phase: ' + phase;
+            document.getElementById('chess-guide-hint').innerHTML = hint;
+        }
+
+        // Call updateGuidePanel after every move
+        const originalRenderBoard = renderBoard;
+        renderBoard = function() {
+            originalRenderBoard.apply(this, arguments);
+            updateGuidePanel();
+        };
 
         renderBoard();
         startTimer();
