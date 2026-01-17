@@ -38,6 +38,26 @@
             margin-bottom: 10px;
             font-weight: 800;
         }
+        /* MedTech Calendar custom styles */
+        .calendar-day.work {
+            background-color: #fff;
+            color: #009688;
+            border-color: #b2dfdb;
+        }
+        .calendar-day.work::after {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 4px;
+            background: #009688;
+            border-radius: 50%;
+            margin-top: 2px;
+        }
+        .dot.work { background-color: #009688; }
+        .calendar-day.today {
+            border: 2px solid #009688;
+            color: #009688;
+        }
         .checker-header p {
             color: #666;
         }
@@ -408,9 +428,21 @@
     <div class="checker-container">
         <div class="checker-card">
             <div class="checker-header">
-                <h1>Day Off Checker</h1>
-                <p>Determine if today is a day off based on your criteria</p>
-                
+                <h1 style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                    <i class="fas fa-user-md" style="color:#009688;"></i>
+                    Day off Checker
+                </h1>
+                <p style="font-size:1.08em;color:#009688;font-weight:600;margin-bottom:6px;">
+                     Night Shift & Day Off Tracker
+                </p>
+                <!-- <div style="margin-top:8px; color:#1a237e; font-size:0.98em; font-weight:600;">
+                    <i class="fas fa-map-marker-alt" style="color:#e53935;"></i>
+                    Cleveland, Ohio &mdash; Eastern Time (US &amp; Canada)
+                </div> -->
+                <div style="margin-top:6px;font-size:0.95em;color:#607d8b;">
+                    <i class="fas fa-moon"></i> Night Shift: 6pm–6am &nbsp;|&nbsp; <i class="fas fa-briefcase-medical"></i> 14-day cycle
+                </div>
+                      
                 <!-- Real-time Status Area -->
                 <div id="realTimeStatus" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
                     <div id="rtClock" style="font-weight: bold; color: #2c3e50; font-size: 1.1em;">Loading time...</div>
@@ -495,12 +527,52 @@
     </div>
 
     <script>
-        // Set default date to today based on US Eastern Time
-        function getUSDateString() {
-            return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+                // --- Weather API Integration ---
+                const WEATHER_API_KEY = 'd5075b1448dd9bfd47f977e3700e011f';
+                // Cleveland, OH coordinates
+                const WEATHER_LAT = 41.4993;
+                const WEATHER_LON = -81.6944;
+
+                // Store fetched weather data for the current month
+                let weatherDataCache = {};
+
+                // Fetch temperature for the past 3 days, today, and next 3 days using Open-Meteo
+                async function fetch7DayTemps() {
+                    // Open-Meteo free API: https://open-meteo.com/en/docs
+                    // Example: https://api.open-meteo.com/v1/forecast?latitude=41.4993&longitude=-81.6944&daily=temperature_2m_max,temperature_2m_min&timezone=America%2FNew_York&past_days=3&forecast_days=7
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_LAT}&longitude=${WEATHER_LON}&daily=temperature_2m_max,temperature_2m_min&timezone=America%2FNew_York&past_days=3&forecast_days=7`;
+                    let temps = {};
+                    try {
+                        const resp = await fetch(url);
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            // data.daily.time is an array of dates (YYYY-MM-DD)
+                            // data.daily.temperature_2m_max is an array of max temps
+                            for (let i = 0; i < data.daily.time.length; i++) {
+                                const key = data.daily.time[i];
+                                temps[key] = `${Math.round(data.daily.temperature_2m_max[i])}°C`;
+                            }
+                        }
+                    } catch (e) {}
+                    return temps;
+                }
+        // Set default date to today based on US Night Shift (6pm-6am) or ET (7pm-7am)
+        function getShiftedDateString() {
+            // By default, use US Eastern Time
+            const nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            const hourET = nowET.getHours();
+            // If before 7am ET, use previous day as the 'work day' for night shift
+            if (hourET < 7) {
+                nowET.setDate(nowET.getDate() - 1);
+            }
+            return nowET.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
         }
-        
-        document.getElementById('checkDate').value = getUSDateString();
+
+        document.getElementById('checkDate').value = getShiftedDateString();
         // Today (Jan 16, 2026) is the 2nd day of a 2-day off period block.
         // In our pattern (Work-Work-Off-Off-Off-Work-Work-Work-Off-Off-Work-Work-Off-Off),
         // The 2-day off blocks are at indices 8-9 and 12-13.
@@ -513,10 +585,38 @@
         // That matches indices 8-9 (Thu-Fri Off).
         // So today is index 9.
         // Day 0 (Start) would be 9 days ago.
-        const today = new Date();
-        const startDate = new Date(today);
-        startDate.setDate(today.getDate() - 9); 
-        document.getElementById('startDate').value = startDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+        // Set default date to today based on US Night Shift (6pm-6am) or ET (7pm-7am)
+        function getShiftedDateString() {
+            // By default, use US Eastern Time
+            const nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            const hourET = nowET.getHours();
+            // If before 7am ET, use previous day as the 'work day' for night shift
+            if (hourET < 7) {
+                nowET.setDate(nowET.getDate() - 1);
+            }
+            return nowET.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+        }
+
+        // Always set the default check date to today's date in Cleveland, Ohio (Eastern Time)
+        function getTodayDateStringET() {
+            const now = new Date();
+            // Get the current time in ET
+            const nowET = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            // Format as yyyy-mm-dd for input[type=date]
+            const yyyy = nowET.getFullYear();
+            const mm = String(nowET.getMonth() + 1).padStart(2, '0');
+            const dd = String(nowET.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+        document.getElementById('checkDate').value = getTodayDateStringET();
+
+        // Set default start date so that Jan 17, 2026 is always the 1st day of 2 straight work days
+        // To make the 3-day off block always fall on Fri-Sat-Sun, set the cycle start date to the most recent Wednesday before Jan 17, 2026
+        // To align with context: Jan 15 and 16, 2026 are the 2-day off block, Jan 17, 2026 is a work day
+        // The 2-day off block is at cycle days 8-9, so set start date so Jan 15, 2026 is cycle day 8
+        // Jan 15, 2026 - 8 days = Jan 7, 2026 (Wednesday)
+        const fixedStartDate = new Date('2026-01-07T00:00:00-05:00'); // Jan 7, 2026 ET (Wednesday)
+        document.getElementById('startDate').value = fixedStartDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 
         // Helper to check for US Federal Holidays
         function getUSHoliday(date) {
@@ -565,9 +665,10 @@
         document.getElementById('dayOffForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+
+            // Always use the selected date as the check date (no shift)
             const checkDateStr = document.getElementById('checkDate').value;
             const startDateStr = document.getElementById('startDate').value;
-            
             const checkDate = new Date(checkDateStr);
             const startDate = new Date(startDateStr);
             
@@ -714,9 +815,34 @@
         let currentCalendarDate = new Date();
 
         function generateCalendar() {
+                        // Fetch and display weather for the visible month (forecast only)
+                        fetch7DayTemps().then(tempMap => {
+                            // For each day cell, add temperature if available, else show nothing
+                            const grid = document.getElementById('calendarGrid');
+                            for (let i = 0; i < grid.children.length; i++) {
+                                const el = grid.children[i];
+                                if (!el.classList.contains('calendar-day') || el.classList.contains('empty')) continue;
+                                const dayNum = el.innerText.match(/^\d+/);
+                                if (!dayNum) continue;
+                                const yyyy = year;
+                                const mm = String(month + 1).padStart(2, '0');
+                                const dd = String(dayNum[0]).padStart(2, '0');
+                                const key = `${yyyy}-${mm}-${dd}`;
+                                if (tempMap[key] !== undefined) {
+                                    let tempDiv = document.createElement('div');
+                                    tempDiv.style.fontSize = '0.8em';
+                                    tempDiv.style.marginTop = '2px';
+                                    tempDiv.style.color = '#e65100';
+                                    tempDiv.innerHTML = `<i class=\"fas fa-thermometer-half\"></i> ${tempMap[key]}`;
+                                    el.appendChild(tempDiv);
+                                    el.title = (el.title ? el.title + ' | ' : '') + `Temp: ${tempMap[key]}`;
+                                }
+                                // If tempMap[key] is undefined, do not display anything
+                            }
+                        });
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
-            
+
             // Update Header
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('monthYear').innerText = `${monthNames[month]} ${year}`;
@@ -735,10 +861,20 @@
 
             // Calculate cycle info
             const startDateStr = document.getElementById('startDate').value;
-            
+
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
-            
+
+            // The cycle pattern should only be declared once
+            const cyclePattern = [
+                true, true,   // 0-1 Work
+                false, false, false, // 2-4 Off (3)
+                true, true, true,  // 5-7 Work
+                false, false, // 8-9 Off (2)
+                true, true,   // 10-11 Work
+                false, false  // 12-13 Off (2)
+            ];
+
             // Empty slots for days before 1st
             for (let i = 0; i < firstDay.getDay(); i++) {
                 const el = document.createElement('div');
@@ -749,11 +885,11 @@
             // Fill days
             for (let d = 1; d <= lastDay.getDate(); d++) {
                 const currentDateUTC = new Date(Date.UTC(year, month, d));
-                
+
                 // To get startDate UTC
                 const [sy, sm, sd] = startDateStr.split('-').map(Number);
                 const startUTC = new Date(Date.UTC(sy, sm - 1, sd));
-                
+
                 const diffTime = currentDateUTC - startUTC;
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 const dayInCycle = ((diffDays % 14) + 14) % 14;
@@ -766,12 +902,12 @@
                     true, true,   // 10-11 Work
                     false, false  // 12-13 Off (2)
                 ];
-                
+
                 const isWorkDay = cyclePattern[dayInCycle];
 
                 const el = document.createElement('div');
                 el.className = 'calendar-day';
-                
+
                 if (!isWorkDay) {
                     // Check if long weekend (days 2, 3, 4)
                     if (dayInCycle >= 2 && dayInCycle <= 4) el.classList.add('long-off');
@@ -781,6 +917,50 @@
                 }
 
                 el.innerText = d;
+
+
+                // Add shift indicator for first and last day of work blocks, visually connecting the two days
+                // Show shift indicator on any off day where the next day is a work day and the next day is the first day of a work block
+                let shiftDiv = null;
+                const isTodayOff = !cyclePattern[dayInCycle];
+                const nextDayInCycle = ((dayInCycle + 1) % 14);
+                // First day of work blocks: 0, 5, 10
+                const isNextDayFirstWork = (nextDayInCycle === 0 || nextDayInCycle === 5 || nextDayInCycle === 10);
+                if (isTodayOff && cyclePattern[nextDayInCycle] && isNextDayFirstWork) {
+                    // Get the next day (for shift end date)
+                    const shiftStartDate = new Date(Date.UTC(year, month, d));
+                    const shiftEndDate = new Date(Date.UTC(year, month, d + 1));
+                    const startStr = shiftStartDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    const endStr = shiftEndDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    shiftDiv = document.createElement('div');
+                    shiftDiv.style.fontSize = '0.7em';
+                    shiftDiv.style.marginTop = '2px';
+                    shiftDiv.style.color = '#4169E1';
+                    shiftDiv.innerHTML = `<i class="fas fa-moon"></i> Shift: 6pm (${startStr}) – 6am (${endStr})`;
+                    el.appendChild(shiftDiv);
+                    el.title = `Shift starts at 6pm on ${startStr} and ends at 6am on ${endStr}.`;
+                }
+                // Last day of work block (work day only)
+                if ((dayInCycle === 1 || dayInCycle === 7 || dayInCycle === 11)) {
+                    shiftDiv = document.createElement('div');
+                    shiftDiv.style.fontSize = '0.7em';
+                    shiftDiv.style.marginTop = '2px';
+                    shiftDiv.style.color = '#4169E1';
+                    shiftDiv.innerHTML = '&larr; Shift ends 6am <i class="fas fa-moon"></i>';
+                    el.appendChild(shiftDiv);
+                    el.title = 'Shift ends at 6am (started 6pm previous day).';
+                }
+
+                // Highlight today
+                const todayET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+                if (
+                    currentDateUTC.getUTCFullYear() === todayET.getFullYear() &&
+                    currentDateUTC.getUTCMonth() === todayET.getMonth() &&
+                    currentDateUTC.getUTCDate() === todayET.getDate()
+                ) {
+                    el.classList.add('today');
+                }
+
                 grid.appendChild(el);
             }
         }
@@ -990,9 +1170,9 @@
             } else {
                 // It is a Work Day
                 if (isShiftTime) {
-                    statusDiv.innerHTML = `<span style="color: #dc3545; font-weight: bold;">● Currently Working</span> (Shift: 7am - 7pm ET)`;
+                    statusDiv.innerHTML = `<span style="color: #dc3545; font-weight: bold;">● Currently Working</span> (Shift: 6am - 6pm ET)`;
                 } else {
-                    statusDiv.innerHTML = `<span style="color: #ffc107; font-weight: bold;">● Off Shift</span> (Work Day, but outside 7am-7pm ET)`;
+                    statusDiv.innerHTML = `<span style="color: #ffc107; font-weight: bold;">● Off Shift</span> (Work Day, but outside 6am-6pm ET)`;
                 }
             }
         }
