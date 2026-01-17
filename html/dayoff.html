@@ -662,7 +662,7 @@
             return null;
         }
 
-        document.getElementById('dayOffForm').addEventListener('submit', function(e) {
+        document.getElementById('dayOffForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
 
@@ -806,10 +806,60 @@
             } else {
                 resultIcon.innerHTML = '<i class="fas fa-briefcase"></i>';
                 resultTitle.textContent = "It's a Work Day";
-                resultMessage.innerHTML = reason + " time to grind!" + dayDisplay;
+                // Check current time in ET
+                const now = new Date();
+                const nyDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+                const hour = nyDate.getHours();
+                let extraStatus = "";
+                let nextShiftHour = 6;
+                let nowMinutes = nyDate.getHours() * 60 + nyDate.getMinutes();
+                let nextShiftMinutes = 0;
+                if (hour < 6) {
+                    nextShiftMinutes = 6 * 60; // 6am today
+                } else if (hour >= 6 && hour < 18) {
+                    nextShiftMinutes = 18 * 60; // 6pm today
+                } else {
+                    nextShiftMinutes = (24 + 6) * 60; // 6am next day
+                }
+                let remainingMinutes = nextShiftMinutes - nowMinutes;
+                if (remainingMinutes < 0) remainingMinutes += 24 * 60;
+                let remainingHours = Math.floor(remainingMinutes / 60);
+                let remainingMins = remainingMinutes % 60;
+                let timeStr = `${remainingHours}h ${remainingMins}m`;
+                if (hour >= 6 && hour < 18) {
+                    extraStatus = `<br><span style="color: #ffc107; font-weight: bold;">Resting or On Break (6am-6pm ET)</span>`;
+                }
+                extraStatus += `<br><span style="color:#4169E1;font-weight:600;">Remaining hours before next shift: ${timeStr}</span>`;
+                resultMessage.innerHTML = reason + " time to grind!" + extraStatus + dayDisplay;
             }
-
+            // Add health-related Cleveland news below the result
+            resultMessage.innerHTML += `<div id='healthNews' style='margin-top:18px;'><span style='color:#009688;'>Loading health news...</span></div>`;
+            const newsHtml = await fetchHealthNewsCleveland();
+            document.getElementById('healthNews').outerHTML = `<div style='margin-top:18px;'><h3 style='color:#009688; font-size:1.08em; margin-bottom:8px;'><i class='fas fa-heartbeat'></i> Cleveland Health News</h3>${newsHtml}</div>`;
         });
+
+        async function fetchHealthNewsCleveland() {
+            const apiKey = '6c7cb0fda4da467eb811fa045b83a704';
+            // Search for health-related news in Cleveland, Ohio
+            const url = `https://newsapi.org/v2/everything?q=Cleveland%20Ohio%20health&language=en&sortBy=publishedAt&apiKey=${apiKey}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.articles && data.articles.length > 0) {
+                    return data.articles.slice(0, 3).map(article => `
+                        <div style="background:#e3fcec; border-radius:8px; padding:10px; margin-bottom:8px; box-shadow:0 2px 8px #00968833;">
+                            <a href="${article.url}" target="_blank" style="font-weight:700; color:#009688; font-size:1.05em; text-decoration:none;">${article.title}</a><br>
+                            <span style="color:#555; font-size:0.95em;">${article.source.name} &mdash; ${new Date(article.publishedAt).toLocaleString()}</span><br>
+                            <span style="color:#333; font-size:0.95em;">${article.description || ''}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    return '<span style="color:#dc3545;">No health news found for Cleveland.</span>';
+                }
+            } catch (err) {
+                return '<span style="color:#dc3545;">Error fetching health news.</span>';
+            }
+        }
 
         // Calendar Logic
         let currentCalendarDate = new Date();
@@ -832,7 +882,7 @@
                                     tempDiv.style.fontSize = '0.8em';
                                     tempDiv.style.marginTop = '2px';
                                     tempDiv.style.color = '#e65100';
-                                    tempDiv.innerHTML = `<i class=\"fas fa-thermometer-half\"></i> ${tempMap[key]}`;
+                                    tempDiv.innerHTML = `<i class="fas fa-thermometer-half"></i> ${tempMap[key]}`;
                                     el.appendChild(tempDiv);
                                     el.title = (el.title ? el.title + ' | ' : '') + `Temp: ${tempMap[key]}`;
                                 }
@@ -1011,44 +1061,38 @@
                  
                  // Calc day in cycle
                  const currentUTC = new Date(Date.UTC(current.getFullYear(), current.getMonth(), current.getDate()));
-                 const diffTime = currentUTC - startUTC;
-                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                 const dayInCycle = ((diffDays % 14) + 14) % 14;
-
-                 // Strategy A: Connect Pre-Cycle Off + 2 Work + 3 Off (Cycle Days 0-1)
-                 // Need to take Days 0 & 1 off.
-                 if (dayInCycle === 0) {
-                     const dateStart = new Date(current);
-                     const dateEnd = new Date(current); dateEnd.setDate(dateStart.getDate() + 1);
-                     
-                     const rangeStart = new Date(current); rangeStart.setDate(rangeStart.getDate() - 2); // The 2 days off before
-                     const rangeEnd = new Date(current); rangeEnd.setDate(rangeEnd.getDate() + 4); // The 3 days off after
-                     
-                     addApp(list, "Take 2 Days, Get 7 Off", 
-                            `${fmt(dateStart)} - ${fmt(dateEnd)}`, 
-                            `${fmt(rangeStart)} to ${fmt(rangeEnd)}`);
-                     foundCount++;
-                 }
+                 const diff = Math.floor((currentUTC - startUTC) / (1000 * 60 * 60 * 24));
+                 const cycle = ((diff % 14) + 14) % 14;
+                 const pattern = [true,true,false,false,false,true,true,true,false,false,true,true,false,false];
                  
-                 // Strategy B: Connect 3 Off + 3 Work + 2 Off (Cycle Days 5-7)
-                 // Need to take Days 5, 6, 7 off.
-                 if (dayInCycle === 5) {
-                     const dateStart = new Date(current);
-                     const dateEnd = new Date(current); dateEnd.setDate(dateStart.getDate() + 2);
+                 const isWork = pattern[cycle];
+                 if (isWork) {
+                     // Create Event 7am to 7pm
+                     const year = current.getFullYear();
+                     const month = (current.getMonth()+1).toString().padStart(2,'0');
+                     const day = current.getDate().toString().padStart(2,'0');
                      
-                     const rangeStart = new Date(current); rangeStart.setDate(rangeStart.getDate() - 3); // The 3 days off before
-                     const rangeEnd = new Date(current); rangeEnd.setDate(rangeEnd.getDate() + 4); // The 2 days off after
+                     const dtStart = `${year}${month}${day}T070000`; // 7am Local (Floating)
+                     const dtEnd = `${year}${month}${day}T190000`;   // 7pm Local
                      
-                     addApp(list, "Take 3 Days, Get 8 Off", 
-                            `${fmt(dateStart)} - ${fmt(dateEnd)}`, 
-                            `${fmt(rangeStart)} to ${fmt(rangeEnd)}`);
-                     foundCount++;
+                     icsContent += "BEGIN:VEVENT\n";
+                     icsContent += `SUMMARY:Work Shift (Cycle Day ${cycle+1})\n`;
+                     icsContent += `DTSTART;TZID=America/New_York:${dtStart}\n`;
+                     icsContent += `DTEND;TZID=America/New_York:${dtEnd}\n`;
+                     icsContent += "END:VEVENT\n";
                  }
-
-                 if (foundCount > 5) break; 
              }
              
-             document.getElementById('plannerResults').style.display = 'block';
+             icsContent += "END:VCALENDAR";
+             
+             const blob = new Blob([icsContent], { type: 'text/calendar' });
+             const url = window.URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             a.download = "myschedule.ics";
+             document.body.appendChild(a);
+             a.click();
+             document.body.removeChild(a);
         });
 
         function fmt(d) {
@@ -1165,10 +1209,11 @@
 
             if (isRestDay) {
                 statusDiv.innerHTML = `<span style="color: #28a745; font-weight: bold;">● Currently Off</span> (Scheduled Day Off)`;
-                // If it's your day off, you are not working regardless of time
             } else {
                 // It is a Work Day
-                if (isShiftTime) {
+                if (hour >= 6 && hour < 18) {
+                    statusDiv.innerHTML = `<span style="color: #ffc107; font-weight: bold;">● Resting or On Break</span> (Work Day, between 6am and 6pm ET)`;
+                } else if (isShiftTime) {
                     statusDiv.innerHTML = `<span style="color: #dc3545; font-weight: bold;">● Currently Working</span> (Shift: 6am - 6pm ET)`;
                 } else {
                     statusDiv.innerHTML = `<span style="color: #ffc107; font-weight: bold;">● Off Shift</span> (Work Day, but outside 6am-6pm ET)`;
